@@ -19,15 +19,17 @@ window_height = round(user32.GetSystemMetrics(1) * 0.85)  # высота окн�
 objects = []
 space = []
 
-B1 = Big_body()
+B1 = BigBody()
 B1.x = 100
-B2 = Big_body()
+B2 = BigBody()
 B2.x = -100
 
 objects.append(B1)
 objects.append(B2)
 
+
 def main():
+    global space
     print('Modelling started!')
     
     root = tkinter.Tk()
@@ -37,7 +39,6 @@ def main():
     space.xview_moveto(.5)
     space.yview_moveto(.5)
 
-    
     create_body_image(space, B1)
     update_object_position(space, B1)
     create_body_image(space, B2)
@@ -45,6 +46,7 @@ def main():
     
     root.mainloop()
     print('Modelling finished!')
+
 
 if __name__ == "__main__":
     main()

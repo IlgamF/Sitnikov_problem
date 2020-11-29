@@ -4,7 +4,9 @@
 """
 Module for physical bodies description
 """
-class Big_body:                                                     #1-ая неделя
+
+
+class BigBody:
     """Класс, описывающий тело большей массы."""
     def __init__(self):
         self.type = "bigbody"
@@ -19,9 +21,8 @@ class Big_body:                                                     #1-ая не
         self.color = "red"
         self.image = None
  
- 
- 
-class Small_body:       
+
+class SmallBody:
     """Класс, описывающий тело меньшей массы."""
     def __init__(self):
         self.type = "smallbody"
