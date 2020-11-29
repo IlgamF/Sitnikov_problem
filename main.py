@@ -7,10 +7,11 @@ Main programme file
 """
 
 import tkinter
-from tkinter.filedialog import *  # это что такое?
+from tkinter.filedialog import *  # это что такое? Пока эта штука не используется, но в будущем понадобится
 from objects import *
 from window import *
-from model import *
+from model_Oxz import *
+"""пока что менять ракурс можно, меняя импортируемый в этой строке модуль, это надо переделать"""
 
 import ctypes
 
@@ -18,24 +19,34 @@ Objects = []  # space objects
 Space = []  # canvas
 Root = []  # window
 
+one_button = []
+two_button = []
+
+
+
 '''
 это странный ход. лучше задать b1 и b2 в отдельной функции, а потом добавить их в массив objects,
 чтобы не делать лишних глобальных переменных. Тогда b1 и b2 можно будет вызвать, как
-objects[0] и objects[1] 
+objects[0] и objects[1]
+
 '''
 
 B1 = BigBody()
 B1.x = 100
 B1.Vy = 1
 B1.color = "blue"
+
 B2 = BigBody()
 B2.x = -100
 B2.Vy = -1
 B2.color = "green"
 
+b = SmallBody()       
+b.Vy = 2
+
 Objects.append(B1)
 Objects.append(B2)
-
+Objects.append(b)
 
 def create_window():
     global Root, Space
@@ -69,7 +80,8 @@ def main():
     update_object_position(Space, B1)
     create_body_image(Space, B2)
     update_object_position(Space, B2)
-
+    create_body_image(Space, b)
+     
     moving()
     
     Root.mainloop()
