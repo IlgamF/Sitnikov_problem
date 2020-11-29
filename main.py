@@ -6,45 +6,60 @@ Main programme file
 """
 
 import tkinter
-from tkinter.filedialog import *
+from tkinter.filedialog import *  # это что такое?
 from objects import *
 from window import *
 
 import ctypes
-user32 = ctypes.windll.user32
 
-window_width = round(user32.GetSystemMetrics(0) * 0.8)  # ширина окна - половина ширины экрана
-window_height = round(user32.GetSystemMetrics(1) * 0.85)  # высота окна - 0.85 высоты экрана
+Objects = []  # space objects
+Space = []  # canvas
+Root = []  # window
 
-objects = []
-space = []
+
+'''
+это странный ход. лучше задать b1 и b2 в отдельной функции, а потом добавить их в массив objects,
+чтобы не делать лишних глобальных переменных. Тогда b1 и b2 можно будет вызвать, как
+objects[0] и objects[1] 
+'''
 
 B1 = BigBody()
 B1.x = 100
 B2 = BigBody()
 B2.x = -100
 
-objects.append(B1)
-objects.append(B2)
+Objects.append(B1)
+Objects.append(B2)
+
+
+def create_window():
+    global Root, Space
+
+    Root = tkinter.Tk()  # create window
+    Root.title('Sitnikov problem')  # window top-left title
+    Root.resizable = True
+    Root.minsize = (window_width, window_height)  # minimal window width
+
+    Space = tkinter.Canvas(Root, width=window_width, height=window_height, bg="white")
+    Space.pack(side=tkinter.TOP)
+    Space.configure(scrollregion=(-window_width / 2, -window_height / 2, window_width / 2, window_height / 2))
+    Space.xview_moveto(.5)
+    Space.yview_moveto(.5)
+
+    return
 
 
 def main():
-    global space
     print('Modelling started!')
-    
-    root = tkinter.Tk()
-    space = tkinter.Canvas(root, width=window_width, height=window_height, bg="white")
-    space.pack(side=tkinter.TOP)
-    space.configure(scrollregion=(-window_width/2,-window_height/2, window_width/2, window_height/2))
-    space.xview_moveto(.5)
-    space.yview_moveto(.5)
 
-    create_body_image(space, B1)
-    update_object_position(space, B1)
-    create_body_image(space, B2)
-    update_object_position(space, B2)
+    create_window()
+
+    create_body_image(Space, B1)
+    update_object_position(Space, B1)
+    create_body_image(Space, B2)
+    update_object_position(Space, B2)
     
-    root.mainloop()
+    Root.mainloop()
     print('Modelling finished!')
 
 
