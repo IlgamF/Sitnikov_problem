@@ -32,17 +32,19 @@ objects[0] и objects[1]
 '''
 
 B1 = BigBody()
-B1.x = 100
+B1.x = 150
 B1.Vy = 1
 B1.color = "blue"
 
 B2 = BigBody()
-B2.x = -100
+B2.x = -150
 B2.Vy = -1
 B2.color = "green"
 
-b = SmallBody()       
-b.Vy = 2
+b = SmallBody()
+b.Vz = 2
+      
+
 
 Objects.append(B1)
 Objects.append(B2)
@@ -64,9 +66,12 @@ def create_window():
 
     return
 
+
 def moving():
+
     recalculate_objects_positions(Objects, dt)
     for i, body in enumerate(Objects):
+        
         update_object_position(Space, body)
     Space.after(101 - dt, moving)
 

@@ -15,11 +15,11 @@ dt = 1
 def body_move(body, dt):
     ax = body.Fx / body.m
     body.Vx += ax*dt
-    body.x += body.Vx * dt
+    body.x += body.Vx * dt + ax*dt**2/2 
 
     ay = body.Fy / body.m
     body.Vy += ay*dt
-    body.y += body.Vy * dt
+    body.y += body.Vy * dt + ay*dt**2/2 
 
 
 def sum_of_squares(v):
