@@ -7,7 +7,7 @@ Main programme file
 
 from objects import *
 from window import *
-from model_Oxy import *
+from model_Oxz import *
 
 Stop = False
 Space = []
@@ -58,7 +58,7 @@ def main():
 
     create_body_image(w.space, Objects[2])  # image of body b
 
-    w.root.bind("<Space>", w.repaint())
+    w.root.bind("<space>", w.repaint)
      
     moving()
     

@@ -39,8 +39,7 @@ class Window:
         self.space.configure(width=event.widget.winfo_width(), height=event.widget.winfo_height())
         pass
 
-    def repaint(self):
-        print('Paint!')
+    def repaint(self, event):
         self.light = not self.light
         if self.light:
             self.space.configure(bg='white')
