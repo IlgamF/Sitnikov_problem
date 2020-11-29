@@ -40,6 +40,7 @@ class Window:
         pass
 
     def repaint(self):
+        print('Paint!')
         self.light = not self.light
         if self.light:
             self.space.configure(bg='white')

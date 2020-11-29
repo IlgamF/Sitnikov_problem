@@ -5,22 +5,24 @@
 Main programme file
 """
 
-import tkinter
-from tkinter.filedialog import *
 from objects import *
 from window import *
 from model_Oxy import *
+
+Stop = False
+Space = []
+Objects = []
 
 
 def get_objects():
     b1 = BigBody()
     b1.x = 150
-    b1.Vy = 1
+    b1.Vy = 1.5
     b1.color = "blue"
     
     b2 = BigBody()
     b2.x = -150
-    b2.Vy = -1
+    b2.Vy = -1.5
     b2.color = "green"
     
     b = SmallBody()
@@ -29,32 +31,40 @@ def get_objects():
     return [b1, b2, b]
 
 
-def moving(space, objects):
+def moving():
     dt = 1
-    recalculate_objects_positions(objects, dt)
-    for i, body in enumerate(objects):
-        update_object_position(space, body)
-    space.after(101 - dt, moving(space, objects))
+    recalculate_objects_positions(Objects, dt)
+    for i, body in enumerate(Objects):
+        update_object_position(Space, body)
+
+    if not Stop:
+        Space.after(101 - dt, moving)
+    pass
 
 
 def main():
+    global Space, Objects
 
     print('Modelling started!')
 
     w = Window()
 
-    objects = get_objects()
+    Objects = get_objects()
+    Space = w.space
 
     for i in (0, 1):  # images of bodies b1 and b2
-        create_body_image(w.space, objects[i])
-        update_object_position(w.space, objects[i])
+        create_body_image(w.space, Objects[i])
+        update_object_position(w.space, Objects[i])
 
-    create_body_image(w.space, objects[2])  # image of body b
+    create_body_image(w.space, Objects[2])  # image of body b
+
+    w.root.bind("<Space>", w.repaint())
      
-    moving(w.space, objects)
+    moving()
     
     w.root.mainloop()
     print('Modelling finished!')
+    return
 
 
 if __name__ == "__main__":

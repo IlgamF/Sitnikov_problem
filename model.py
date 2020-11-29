@@ -8,7 +8,6 @@ Module for interaction model description
 import numpy as np
 
 gravitational_constant = 1
-dt = 1
 
 """Функции движения написаны для плоскости Oxy(см.в ТЗ),
    при наблюдении из точки на оси z."""

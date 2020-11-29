@@ -8,7 +8,6 @@ Module for interaction model description
 import numpy as np
 
 gravitational_constant = 1
-dt = 1
 
 """Большие тела уничтожаются спустя четверть периода. Почему?."""
 
