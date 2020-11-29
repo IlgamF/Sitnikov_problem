@@ -2,6 +2,7 @@
 # license: GPLv3
 
 """
+
 Main programme file
 """
 
@@ -9,13 +10,13 @@ import tkinter
 from tkinter.filedialog import *  # это что такое?
 from objects import *
 from window import *
+from model import *
 
 import ctypes
 
 Objects = []  # space objects
 Space = []  # canvas
 Root = []  # window
-
 
 '''
 это странный ход. лучше задать b1 и b2 в отдельной функции, а потом добавить их в массив objects,
@@ -25,8 +26,12 @@ objects[0] и objects[1]
 
 B1 = BigBody()
 B1.x = 100
+B1.Vy = 1
+B1.color = "blue"
 B2 = BigBody()
 B2.x = -100
+B2.Vy = -1
+B2.color = "green"
 
 Objects.append(B1)
 Objects.append(B2)
@@ -48,8 +53,14 @@ def create_window():
 
     return
 
+def moving():
+    recalculate_objects_positions(Objects, dt)
+    for i, body in enumerate(Objects):
+        update_object_position(Space, body)
+    Space.after(101 - dt, moving)
 
 def main():
+
     print('Modelling started!')
 
     create_window()
@@ -58,6 +69,8 @@ def main():
     update_object_position(Space, B1)
     create_body_image(Space, B2)
     update_object_position(Space, B2)
+
+    moving()
     
     Root.mainloop()
     print('Modelling finished!')

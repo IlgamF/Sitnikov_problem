@@ -7,11 +7,12 @@ Module for interaction model description
 
 import numpy as np
 
-gravitational_constant = 6.67408E-11
+gravitational_constant = 1
 dt = 1
 
-
-def body_move(body):
+"""Функции движения написаны для плоскости Oxy(см.в ТЗ),
+   при наблюдении из точки на оси z."""
+def body_move(body, dt):
     ax = body.Fx / body.m
     body.Vx += ax*dt
     body.x += body.Vx * dt
@@ -27,12 +28,10 @@ def sum_of_squares(v):
     return sum(vi ** 2 for vi in v)
 
 
-def body_force(body):
+def body_force(body, objects):
     body.Fx = body.Fy = 0
     for obj in objects:
         if body == obj:
-            continue
-        if obj.type == "smallbody":
             continue
         vec = np.array([obj.x - body.x, obj.y - body.y])
         r = np.sqrt(sum_of_squares(vec))
@@ -45,7 +44,7 @@ def body_force(body):
 
 def recalculate_objects_positions(objects, dt):
     for body in objects:
-        body_force(body)
+        body_force(body, objects)
     for body in objects:
         body_move(body, dt)
 
