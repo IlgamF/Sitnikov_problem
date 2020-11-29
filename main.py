@@ -7,7 +7,7 @@ Main programme file
 
 from objects import *
 from window import *
-from model_Oxz import *
+from model_Oxy import *
 
 W = Window()
 Stop = False
@@ -32,10 +32,11 @@ def get_objects():
 
 
 def moving():
-    dt = 1
-    recalculate_objects_positions(Objects, dt)
+    dt = 10
+    recalculate_objects_positions(Objects, dt/5)
     for i, body in enumerate(Objects):
         update_object_position(W.space, body)
+        W.space.update()
 
     W.space.after(101 - dt, moving)
     pass
@@ -59,6 +60,8 @@ def main():
         update_object_position(W.space, Objects[i])
 
     create_body_image(W.space, Objects[2])  # image of body b
+
+    W.init_buttons()
 
     W.space.bind("<Configure>", W.resize)
     W.root.bind("<space>", W.repaint)

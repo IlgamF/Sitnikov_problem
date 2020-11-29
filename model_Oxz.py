@@ -48,6 +48,7 @@ def body_force(body, objects):
         body.Fy += df * unit_vec[1]
         body.Fz += df * unit_vec[2]
 
+
 def recalculate_objects_positions(objects, dt):
     for body in objects:
         if body.type == "bigbody":
