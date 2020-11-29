@@ -22,30 +22,36 @@ class Window:
         window_height = round(user32.GetSystemMetrics(1) / 9 * 6)
 
         self.root = tkinter.Tk()  # create window
+        self.root.geometry('%ix%i' % (window_width, window_height))
         self.root.title('Sitnikov problem')  # window top-left title
-        self.root.resizable = (True, True)
-        self.root.minsize = (window_width, window_height)  # minimal window width
+        self.root.minsize()
 
-        self.light = False  # defines color of canvas (black or white
+        self.light = 0  # defines color of canvas (black or white)
+        self.colours = ('black', 'white')
 
-        self.space = tkinter.Canvas(self.root, width=window_width, height=window_height, bg='black')
-        self.space.pack(side=tkinter.TOP)
+        self.space = tkinter.Canvas(self.root, bg='black')
+        self.space.pack(side=tkinter.TOP, fill="both", expand=True)
         self.space.configure(scrollregion=(-window_width / 2, -window_height / 2, window_width / 2, window_height / 2))
         self.space.xview_moveto(.5)
         self.space.yview_moveto(.5)
+
         pass
 
     def resize(self, event):
-        self.space.configure(width=event.widget.winfo_width(), height=event.widget.winfo_height())
+        w, h = self.root.winfo_width(), self.root.winfo_height()
+        self.space.configure(scrollregion=(- w / 2, - h / 2, w / 2, h / 2))
+        print('Hello!')
         pass
 
     def repaint(self, event):
-        self.light = not self.light
-        if self.light:
-            self.space.configure(bg='white')
-        else:
-            self.space.configure(bg='black')
+        self.light = abs(self.light - 1)
+        self.space.configure(bg=self.colours[self.light])
         pass
+
+
+class RoundButton:
+    def __init__(self, canvas):
+        self.radius = canvas.winfo_width / 20
 
 
 def create_body_image(space, body):

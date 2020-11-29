@@ -9,8 +9,8 @@ from objects import *
 from window import *
 from model_Oxz import *
 
+W = Window()
 Stop = False
-Space = []
 Objects = []
 
 
@@ -35,38 +35,41 @@ def moving():
     dt = 1
     recalculate_objects_positions(Objects, dt)
     for i, body in enumerate(Objects):
-        update_object_position(Space, body)
+        update_object_position(W.space, body)
 
-    if not Stop:
-        Space.after(101 - dt, moving)
+    W.space.after(101 - dt, moving)
     pass
 
 
+def close(event):
+    global Stop
+    Stop = True
+    return
+
+
 def main():
-    global Space, Objects
+    global Objects
 
     print('Modelling started!')
 
-    w = Window()
-
     Objects = get_objects()
-    Space = w.space
 
     for i in (0, 1):  # images of bodies b1 and b2
-        create_body_image(w.space, Objects[i])
-        update_object_position(w.space, Objects[i])
+        create_body_image(W.space, Objects[i])
+        update_object_position(W.space, Objects[i])
 
-    create_body_image(w.space, Objects[2])  # image of body b
+    create_body_image(W.space, Objects[2])  # image of body b
 
-    w.root.bind("<space>", w.repaint)
+    W.space.bind("<Configure>", W.resize)
+    W.root.bind("<space>", W.repaint)
+    W.root.bind("<Destroy>", close)
      
     moving()
-    
-    w.root.mainloop()
+    if not Stop:
+        W.root.mainloop()
     print('Modelling finished!')
     return
 
 
 if __name__ == "__main__":
     main()
-
