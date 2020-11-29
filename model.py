@@ -12,6 +12,8 @@ dt = 1
 
 """Функции движения написаны для плоскости Oxy(см.в ТЗ),
    при наблюдении из точки на оси z."""
+
+
 def body_move(body, dt):
     ax = body.Fx / body.m
     body.Vx += ax*dt
@@ -25,7 +27,6 @@ def body_move(body, dt):
     body.Vz += az*dt
     body.z += body.Vz * dt + az*dt**2/2 
 
-    
 
 def sum_of_squares(v):
     """ v1 * v1 + v2 * v2 ... + vn * vn"""
