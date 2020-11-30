@@ -60,6 +60,8 @@ class Window:
     def repaint(self, event):
         self.light = abs(self.light - 1)
         self.space.configure(bg=self.colours[self.light])
+        for i in self.buttons:
+            i.repaint(self.light, self.space)
         pass
 
     def push(self, event):
@@ -87,7 +89,7 @@ class RoundButton:
         self.center_y = self.height // 2 - self.radius - 5
         self.id = canvas.create_oval((self.center_x - self.radius, self.center_y - self.radius),
                                      (self.center_x + self.radius, self.center_y + self.radius),
-                                     fill=self.colours_dark[self.num-1], width=4)
+                                     fill=self.colours_dark[self.num-1], width=2)
         pass
 
     def resize(self, canvas):
@@ -98,6 +100,13 @@ class RoundButton:
         canvas.coords(self.id,
                       self.center_x - self.radius, self.center_y - self.radius,
                       self.center_x + self.radius, self.center_y + self.radius)
+        pass
+
+    def repaint(self, light, canvas):
+        if light == 1:
+            canvas.itemconfigure(self.id, fill=self.colours_light[self.num-1])
+        else:
+            canvas.itemconfigure(self.id, fill=self.colours_dark[self.num-1])
         pass
 
     def push(self, event):
