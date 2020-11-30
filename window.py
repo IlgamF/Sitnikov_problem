@@ -8,6 +8,15 @@ Visualization module. Describes main screen processes
 import ctypes
 from tkinter import *
 import numpy as np
+from PIL import ImageTk, Image
+
+views = [['Oxy', np.pi/2, 0, 'off'],  # surface Oxy
+         ['Oxz', np.pi/2, 'off', 0],  # surface Oxz
+         ['Oyz', 'off', np.pi/2, 0],  # surface Oyz
+         ['Xyz', np.pi/4, np.pi/2, 0],  # x looks at us and surface Oyz
+         ['Yxz', np.pi/2, np.pi * 3/4, 0],  # y looks at us and surface Oxz
+         ['Zxy', np.pi/2, 0, np.pi/2],  # Z looks at us and surface Oxy
+         ['XYz', np.pi/3, np.pi * 5/3, 0]]  # X, Y look at us and axis Z - up
 
 
 class Window:
@@ -19,11 +28,11 @@ class Window:
     """
     def __init__(self):
         user32 = ctypes.windll.user32
-        self.window_width = round(user32.GetSystemMetrics(0) / 16 * 8)
-        self.window_height = round(user32.GetSystemMetrics(1) / 9 * 6)
+        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 8)
+        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
 
         self.root = Tk()  # create window
-        self.root.geometry('%ix%i' % (self.window_width, self.window_height))
+        self.root.geometry('%ix%i' % (self.in_w, self.in_h))
         self.root.title('Sitnikov problem')  # window top-left title
         self.root.minsize()
 
@@ -32,10 +41,12 @@ class Window:
 
         self.space = Canvas(self.root, bg='black')
         self.space.pack(side=TOP, fill="both", expand=True)
-        self.space.configure(scrollregion=(-self.window_width / 2, -self.window_height / 2,
-                                           self.window_width / 2, self.window_height / 2))
+        self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,
+                                           self.in_w / 2, self.in_h / 2))
         self.space.xview_moveto(.5)
         self.space.yview_moveto(.5)
+
+        self.view = 0
 
         self.buttons = self.init_buttons()
 
@@ -43,21 +54,18 @@ class Window:
         pass
 
     def init_buttons(self):
-        canvas = self.space
-        theory = RoundButton(canvas, self.window_width, self.window_height, 1)
-        graphics = RoundButton(canvas, self.window_width, self.window_height, 2)
-        info = RoundButton(canvas, self.window_width, self.window_height, 3)
-        quest = RoundButton(canvas, self.window_width, self.window_height, 4)
-        eye = RoundButton(canvas, self.window_width, self.window_height, 17)
-        play = RoundButton(canvas, self.window_width, self.window_height, 18)
-        return [theory, graphics, info, quest, eye, play]
+        buttons = []
+        for i in (1, 2, 3, 4, 17, 18):
+            but = RoundButton(self.space, self.in_w, self.in_h, i)
+            buttons.append(but)
+        return buttons
 
     def init_axes(self):
-        axis_a = Axis(self.space, self.window_width, self.window_height, 1)
-        axis_b = Axis(self.space, self.window_width, self.window_height, 2)
-        axis_c = Axis(self.space, self.window_width, self.window_height, 3)
-        self.space.update()
-        return [axis_a, axis_b, axis_c]
+        axes = []
+        for i in (1, 2, 3):
+            a = Axis(self.space, self.in_w, self.in_h, i)
+            axes.append(a)
+        return axes
 
     def resize(self, event):
         w, h = self.root.winfo_width(), self.root.winfo_height()
@@ -66,6 +74,7 @@ class Window:
             self.buttons[i].resize(self.space)
         for k in range(len(self.axes)):
             self.axes[k].resize(self.space)
+        self.in_w, self.in_h = w, h
         pass
 
     def repaint(self, event):
@@ -78,8 +87,11 @@ class Window:
         pass
 
     def push(self, event):
+        a = 0
         for i in self.buttons:
-            i.push(event)
+            a += i.push(event)
+        if a == 5:
+            self.view = (self.view + 1) % len(views)
         pass
 
 
@@ -92,6 +104,7 @@ class RightPanel:
 
 class Axis:
     def __init__(self, canvas, width, height, i):
+        self.in_w, self.in_h = width, height
         self.width, self.height = width, height
         self.colours = ['white', 'black']
         print(self.width, self.height)
@@ -109,14 +122,12 @@ class Axis:
 
     def resize(self, canvas):
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        if self.i == 1:  # axis X
-            self.start_x, self.finish_x = -self.width // 2, self.width // 2
-            self.start_y, self.finish_y = 0, 0
-        elif self.i == 2:  # axis Y
-            self.start_x, self.finish_x = 0, 0
-            self.start_y, self.finish_y = -self.height // 2, self.height // 2
-        else:  # axis Z
-            self.start_x = self.start_y = self.finish_x = self.finish_y = 0
+        rec_x, rec_y = self.width / self.in_w, self.height / self.in_h
+        self.in_w, self.in_h = self.width, self.height
+        self.start_x *= rec_x
+        self.start_y *= rec_y
+        self.finish_x *= rec_x
+        self.finish_y *= rec_y
         canvas.coords(self.id, self.start_x, self.start_y, self.finish_x, self.finish_y)
         pass
 
@@ -128,7 +139,6 @@ class Axis:
 class RoundButton:
     def __init__(self, canvas, width, height, i):
         self.width, self.height = width, height
-        print(self.width, self.height)
         self.radius = self.width // 40
         self.i = i
         self.num = i % 12  # button serial number
@@ -143,7 +153,6 @@ class RoundButton:
 
     def resize(self, canvas):
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        print(self.width, self.height)
         self.radius = self.width // 40
         self.center_x = -self.width // 2 + self.i * 2 * self.radius + 1
         self.center_y = self.height // 2 - self.radius - 5
@@ -161,24 +170,10 @@ class RoundButton:
 
     def push(self, event):
         x, y = event.x - self.width//2, event.y - self.height//2
-        if np.sqrt((x - self.center_x)**2 + (y - self.center_y)**2) <= self.radius:
-            if self.num == 1:
-                print(1)
-                # функция вывода окна с теоретическими выгладками
-            elif self.num == 2:
-                print(2)
-                # функция вывода окна с графиками
-            elif self.num == 3:
-                print(3)
-                # функция вывода окна с графиками
-            elif self.num == 4:
-                print(4)
-                # функция вывода окна с графиками
-            elif self.num == 5:
-                print(5)
-                change_view()  # функция смены вида
-            else:
-                print(6)   # функция запуска
+        if np.sqrt((x - self.center_x)**2 + (y - self.center_y)**2) < self.radius-1:
+            return self.num
+        else:
+            return 0
 
 
 class Point:
@@ -200,34 +195,20 @@ class Point:
         pass
 
 
-def change_view():
-    pass
-
-
-def create_body_image(space, body):
-    """
-    :param space:
-    :param body:
-    :return:
-    """
+def create_body_image(w, body):
     x = body.x
     y = body.y
     r = body.R
-    body.image = space.create_oval([x - r, y - r], [x + r, y + r], fill=body.color)
+    body.image = w.space.create_oval([x - r, y - r], [x + r, y + r], fill=body.color)
     return
 
 
-def update_object_position(space, body):
-    """
-    :param space:
-    :param body:
-    :return:
-    """
+def update_object_position(w, body):
     x = body.x
     y = body.y
     r = body.R
-    space.coords(body.image, x - r, y - r, x + r, y + r)
-    space.update()
+    w.space.coords(body.image, x - r, y - r, x + r, y + r)
+    w.space.update()
     return
 
 

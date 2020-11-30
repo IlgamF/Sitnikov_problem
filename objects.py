@@ -14,22 +14,14 @@ class BigBody:
         self.R = 10
         self.color = "red"
         self.image = None
+        self.path = []
         
-        self.x = 0
-        self.y = 0
-        self.Vx = 0
-        self.Vy = 0
-        self.Fx = 0
-        self.Fy = 0
-        
-        self.a = 0
-        self.b = 0
-        self.c = 0        
-        self.Va = 0
-        self.Vb = 0
-        self.Vc = 0
-        
- 
+        self.x, self.y = 0, 0
+
+        self.a, self.b, self.c = 0, 0, 0
+        self.Va, self.Vb, self.Vc = 0, 0, 0
+        self.Fa, self.Fb, self.Fc = 0, 0, 0
+
 
 class SmallBody:
     """Класс, описывающий тело меньшей массы."""
@@ -39,20 +31,12 @@ class SmallBody:
         self.R = 5
         self.color = "red"
         self.image = None
-        
-        self.x = 0
-        self.y = 0
-        self.Vx = 0
-        self.Vy = 0
-        self.Fx = 0
-        self.Fy = 0
-        
-        self.a = 0
-        self.b = 0
-        self.c = 0        
-        self.Va = 0
-        self.Vb = 0
-        self.Vc = 0
+
+        self.x, self.y = 0, 0
+
+        self.a, self.b, self.c = 0, 0, 0
+        self.Va, self.Vb, self.Vc = 0, 0, 0
+        self.Fa, self.Fb, self.Fc = 0, 0, 0
 
 
 if __name__ == "__main__":

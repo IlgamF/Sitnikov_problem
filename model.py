@@ -14,17 +14,17 @@ gravitational_constant = 1
 
 
 def body_move(body, dt):
-    aa = body.Fa / body.m
-    body.Va += aa*dt
-    body.a += body.Va * dt + aa*dt**2/2 
+    accel_a = body.Fa / body.m
+    body.Va += accel_a*dt
+    body.a += body.Va * dt + accel_a*dt**2/2
 
-    ab = body.Fb / body.m
-    body.Vb += ab*dt
-    body.b += body.Vb * dt + ab*dt**2/2 
+    accel_b = body.Fb / body.m
+    body.Vb += accel_b*dt
+    body.b += body.Vb * dt + accel_b*dt**2/2
 
-    ac = body.Fc / body.m
-    body.Vc += ac*dt
-    body.c += body.Vc * dt + ac*dt**2/2 
+    accel_c = body.Fc / body.m
+    body.Vc += accel_c*dt
+    body.c += body.Vc * dt + accel_c*dt**2/2
 
 
 def sum_of_squares(v):
@@ -38,14 +38,16 @@ def body_force(body, objects):
     for obj in objects:
         if body == obj:
             continue
-        vec = np.array([obj.a - body.a, obj.b - body.b, obj.c - body.c])
-        r = np.sqrt(sum_of_squares(vec))
-        unit_vec = vec / r
+        else:
+            vec = np.array([obj.a - body.a, obj.b - body.b, obj.c - body.c])
+            r = np.sqrt(sum_of_squares(vec))
+            unit_vec = vec / r
 
-        df = gravitational_constant * body.m * obj.m / r ** 2
-        body.Fa += df * unit_vec[0]
-        body.Fb += df * unit_vec[1]
-        body.Fc += df * unit_vec[2]
+            df = gravitational_constant * body.m * obj.m / r ** 2
+            body.Fa += df * unit_vec[0]
+            body.Fb += df * unit_vec[1]
+            body.Fc += df * unit_vec[2]
+        pass
 
 
 def recalculate_objects_positions(objects, dt):      
@@ -53,6 +55,7 @@ def recalculate_objects_positions(objects, dt):
         body_force(body, objects)
     for body in objects:
         body_move(body, dt)
-            
+
+
 if __name__ == "__main__":
     print("This module is not for direct call!")
