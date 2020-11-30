@@ -7,7 +7,7 @@ Visualization module. Describes main screen processes
 
 import ctypes
 from tkinter import *
-from PIL import Image, ImageTk
+import numpy as np
 
 
 class Window:
@@ -40,6 +40,16 @@ class Window:
 
         pass
 
+    def init_buttons(self):
+        canvas = self.space
+        theory = RoundButton(canvas, 1)
+        graphics = RoundButton(canvas, 2)
+        info = RoundButton(canvas, 3)
+        quest = RoundButton(canvas, 4)
+        eye = RoundButton(canvas, 17)
+        play = RoundButton(canvas, 18)
+        return [theory, graphics, info, quest, eye, play]
+
     def resize(self, event):
         w, h = self.root.winfo_width(), self.root.winfo_height()
         self.space.configure(scrollregion=(- w / 2, - h / 2, w / 2, h / 2))
@@ -52,15 +62,10 @@ class Window:
         self.space.configure(bg=self.colours[self.light])
         pass
 
-    def init_buttons(self):
-        canvas = self.space
-        theory = RoundButton(canvas, 1)
-        graphics = RoundButton(canvas, 2)
-        info = RoundButton(canvas, 3)
-        quest = RoundButton(canvas, 4)
-        eye = RoundButton(canvas, 17)
-        play = RoundButton(canvas, 18)
-        return [theory, graphics, info, quest, eye, play]
+    def push(self, event):
+        for i in self.buttons:
+            i.push(event)
+        pass
 
 
 class RightPanel:
@@ -96,7 +101,8 @@ class RoundButton:
         pass
 
     def push(self, event):
-        if event.x - self.center <= self.radius:
+        x, y = event.x - self.width//2, event.y - self.height//2
+        if np.sqrt((x - self.center_x)**2 + (y - self.center_y)**2) <= self.radius:
             if self.num == 1:
                 print(1)
                 # функция вывода окна с теоретическими выгладками

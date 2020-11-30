@@ -84,6 +84,7 @@ def main():
 
     W.space.bind("<Configure>", W.resize)
     W.root.bind("<space>", W.repaint)
+    W.space.bind("<Button-1>", W.push)
     W.root.bind("<Destroy>", close)
      
     moving()
