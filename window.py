@@ -13,7 +13,7 @@ from PIL import ImageTk, Image
 views = [['Oxy', 0, np.pi/2, 'off'],  # surface Oxy
          ['Oxz', np.pi/2, 'off', 0],  # surface Oxz
          ['Oyz', 'off', np.pi/2, 0],  # surface Oyz
-         ['Xyz', np.pi/4, np.pi/2, 0],  # x looks at us and surface Oyz
+         ['Xyz', np.pi/2, np.pi/2, 0],  # x looks at us and surface Oyz
          ['Yxz', np.pi/2, np.pi * 3/4, 0],  # y looks at us and surface Oxz
          ['Zxy', np.pi/2, 0, np.pi/4],  # Z looks at us and surface Oxy
          ['XYz', np.pi/3, np.pi * 5/3, 0]]  # X, Y look at us and axis Z - up
