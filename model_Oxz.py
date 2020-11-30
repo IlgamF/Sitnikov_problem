@@ -50,8 +50,7 @@ def body_force(body, objects):
 
 
 def recalculate_objects_positions(objects, dt):
-    
-        
+
     for body in objects:
         body_force(body, objects)
     for body in objects:

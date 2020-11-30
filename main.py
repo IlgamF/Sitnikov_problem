@@ -10,10 +10,10 @@ from window import *
 from model import *
 
 W = Window()
-W.root.bind('<Motion>', W.resize)  # это пока для удобства, всё будет работать по-другому
 Stop = False
 Objects = []
 P = Point()
+
 
 def get_objects():
     b1 = BigBody()

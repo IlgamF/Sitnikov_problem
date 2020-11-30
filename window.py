@@ -19,11 +19,11 @@ class Window:
     """
     def __init__(self):
         user32 = ctypes.windll.user32
-        window_width = round(user32.GetSystemMetrics(0) / 16 * 8)
-        window_height = round(user32.GetSystemMetrics(1) / 9 * 6)
+        self.window_width = round(user32.GetSystemMetrics(0) / 16 * 8)
+        self.window_height = round(user32.GetSystemMetrics(1) / 9 * 6)
 
         self.root = Tk()  # create window
-        self.root.geometry('%ix%i' % (window_width, window_height))
+        self.root.geometry('%ix%i' % (self.window_width, self.window_height))
         self.root.title('Sitnikov problem')  # window top-left title
         self.root.minsize()
 
@@ -32,23 +32,32 @@ class Window:
 
         self.space = Canvas(self.root, bg='black')
         self.space.pack(side=TOP, fill="both", expand=True)
-        self.space.configure(scrollregion=(-window_width / 2, -window_height / 2, window_width / 2, window_height / 2))
+        self.space.configure(scrollregion=(-self.window_width / 2, -self.window_height / 2,
+                                           self.window_width / 2, self.window_height / 2))
         self.space.xview_moveto(.5)
         self.space.yview_moveto(.5)
 
         self.buttons = self.init_buttons()
 
+        self.axes = self.init_axes()
         pass
 
     def init_buttons(self):
         canvas = self.space
-        theory = RoundButton(canvas, 1)
-        graphics = RoundButton(canvas, 2)
-        info = RoundButton(canvas, 3)
-        quest = RoundButton(canvas, 4)
-        eye = RoundButton(canvas, 17)
-        play = RoundButton(canvas, 18)
+        theory = RoundButton(canvas, self.window_width, self.window_height, 1)
+        graphics = RoundButton(canvas, self.window_width, self.window_height, 2)
+        info = RoundButton(canvas, self.window_width, self.window_height, 3)
+        quest = RoundButton(canvas, self.window_width, self.window_height, 4)
+        eye = RoundButton(canvas, self.window_width, self.window_height, 17)
+        play = RoundButton(canvas, self.window_width, self.window_height, 18)
         return [theory, graphics, info, quest, eye, play]
+
+    def init_axes(self):
+        axis_a = Axis(self.space, self.window_width, self.window_height, 1)
+        axis_b = Axis(self.space, self.window_width, self.window_height, 2)
+        axis_c = Axis(self.space, self.window_width, self.window_height, 3)
+        self.space.update()
+        return [axis_a, axis_b, axis_c]
 
     def resize(self, event):
         w, h = self.root.winfo_width(), self.root.winfo_height()
@@ -77,9 +86,25 @@ class RightPanel:
         pass
 
 
+class Axis:
+    def __init__(self, canvas, width, height, i):
+        self.width, self.height = width, height
+        print(self.width, self.height)
+        if i == 1:  # axis X
+            self.start_x, self.finish_x = -self.width//2, self.width//2
+            self.start_y, self.finish_y = 0, 0
+        elif i == 2:  # axis Y
+            self.start_x, self.finish_x = 0, 0
+            self.start_y, self.finish_y = -self.height // 2, self.height // 2
+        else:  # axis Z
+            self.start_x = self.start_y = self.finish_x = self.finish_y = 0
+        self.id = canvas.create_line(self.start_x, self.start_y, self.finish_x, self.finish_y, fill='white')
+
+
 class RoundButton:
-    def __init__(self, canvas, i):
-        self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
+    def __init__(self, canvas, width, height, i):
+        self.width, self.height = width, height
+        print(self.width, self.height)
         self.radius = self.width // 40
         self.i = i
         self.num = i % 12  # button serial number
@@ -94,6 +119,7 @@ class RoundButton:
 
     def resize(self, canvas):
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
+        print(self.width, self.height)
         self.radius = self.width // 40
         self.center_x = -self.width // 2 + self.i * 2 * self.radius + 1
         self.center_y = self.height // 2 - self.radius - 5
@@ -139,12 +165,16 @@ class Point:
 
         self.r = 1
         pass
+
     def draw_point(self, objects, w):
         for body in objects:
             self.x = body.x
             self.y = body.y
-            w.space.create_oval([self.x - self.r, self.y - self.r], [self.x + self.r, self.y + self.r], fill="white")
+            w.space.create_oval([self.x - self.r, self.y - self.r],
+                                [self.x + self.r, self.y + self.r],
+                                fill="white")
         pass
+
 
 def change_view():
     pass
