@@ -18,12 +18,12 @@ P = Point()
 def get_objects():
     b1 = BigBody()
     b1.a = 150
-    b1.Vb = 1
+    b1.Vb = 1.5
     b1.color = "blue"
     
     b2 = BigBody()
     b2.a = -150
-    b2.Vb = -1
+    b2.Vb = -1.5
     b2.color = "green"
     
     b = SmallBody()
@@ -33,8 +33,8 @@ def get_objects():
 
 
 def moving():
-    dt = 10
-    recalculate_objects_positions(Objects, dt/5)
+    dt = 100
+    recalculate_objects_positions(Objects, dt/400)
 
     for i, body in enumerate(Objects):
         for obj in Objects:
@@ -43,7 +43,7 @@ def moving():
             else:
                 obj.x = obj.a
                 obj.y = obj.b
-            P.draw_point(Objects, W)
+            # P.draw_point(Objects, W)
         update_object_position(W, body)
         W.space.update()
 

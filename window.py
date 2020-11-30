@@ -10,12 +10,12 @@ from tkinter import *
 import numpy as np
 from PIL import ImageTk, Image
 
-views = [['Oxy', np.pi/2, 0, 'off'],  # surface Oxy
+views = [['Oxy', 0, np.pi/2, 'off'],  # surface Oxy
          ['Oxz', np.pi/2, 'off', 0],  # surface Oxz
          ['Oyz', 'off', np.pi/2, 0],  # surface Oyz
          ['Xyz', np.pi/4, np.pi/2, 0],  # x looks at us and surface Oyz
          ['Yxz', np.pi/2, np.pi * 3/4, 0],  # y looks at us and surface Oxz
-         ['Zxy', np.pi/2, 0, np.pi/2],  # Z looks at us and surface Oxy
+         ['Zxy', np.pi/2, 0, np.pi/4],  # Z looks at us and surface Oxy
          ['XYz', np.pi/3, np.pi * 5/3, 0]]  # X, Y look at us and axis Z - up
 
 
@@ -47,6 +47,7 @@ class Window:
         self.space.yview_moveto(.5)
 
         self.view = 0
+        self.xy = self.reorganize_axes()
 
         self.buttons = self.init_buttons()
 
@@ -92,7 +93,24 @@ class Window:
             a += i.push(event)
         if a == 5:
             self.view = (self.view + 1) % len(views)
+            self.xy = self.reorganize_axes()
         pass
+
+    def reorganize_axes(self):
+        """
+        Switches axes on or off in dependence on w.view
+        :param w: Window
+        :return: x_axis, y_axis, z_axis
+        """
+        view = views[self.view]
+        print(view[0])
+        axes = [True, True, True]
+        for i in range(len(view)):
+            if i == 0:
+                print(view[i])
+            elif view[i] == 'off':  # switches off the axis, if it is not used
+                axes[i - 1] = False
+        return view, axes
 
 
 class RightPanel:
@@ -193,7 +211,6 @@ class Point:
     def __init__(self):
         self.x = 0
         self.y = 0
-
         self.r = 1
         pass
 
@@ -207,7 +224,21 @@ class Point:
         pass
 
 
+def reorganize_coordinates(w, body):
+    view, axes = w.xy
+    da, db, dc = (0, 0), (0, 0), (0, 0)
+    if axes[0]:  # if x exists
+        da = (-body.a * np.sin(view[1]), body.a * np.cos(view[1]))
+    if axes[1]:
+        db = (body.b * np.sin(view[2]), body.b * np.cos(view[2]))
+    if axes[2]:
+        dc = (body.c * np.sin(view[3]), - body.c * np.cos(view[3]))
+    body.x, body.y = da[0] + db[0] + dc[0], da[1] + db[1] + dc[1]
+    pass
+
+
 def create_body_image(w, body):
+    reorganize_coordinates(w, body)
     x = body.x
     y = body.y
     r = body.R
@@ -216,6 +247,7 @@ def create_body_image(w, body):
 
 
 def update_object_position(w, body):
+    reorganize_coordinates(w, body)
     x = body.x
     y = body.y
     r = body.R
