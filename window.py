@@ -55,7 +55,7 @@ class Window:
 
     def init_buttons(self):
         buttons = []
-        for i in (1, 2, 3, 4, 17, 18):
+        for i in (1, 2, 3, 4, -2, -1):
             but = RoundButton(self.space, self.in_w, self.in_h, i)
             buttons.append(but)
         return buttons
@@ -139,38 +139,50 @@ class Axis:
 class RoundButton:
     def __init__(self, canvas, width, height, i):
         self.width, self.height = width, height
-        self.radius = self.width // 40
+        self.radius = 28
         self.i = i
-        self.num = i % 12  # button serial number
-        self.colours_light = ['#c00', '#0c0', '#00c', '#f40', '#408', '#408']
-        self.colours_dark = ['#c55', '#0f8', '#dff', '#fe8', '#e8e', '#e8e']
-        self.center_x = -self.width//2 + self.i * 2 * self.radius + 1
-        self.center_y = self.height // 2 - self.radius - 5
-        self.id = canvas.create_oval((self.center_x - self.radius, self.center_y - self.radius),
-                                     (self.center_x + self.radius, self.center_y + self.radius),
-                                     fill=self.colours_dark[self.num-1], width=2)
+        if i > 0:
+            self.num = i  # button serial number
+        else:
+            self.num = 7 + i
+        self.colours_dark = ['th1', 'gr1', 'in1', 'q1', 'ey1', 'pl1']
+        self.colours_light = ['th2', 'gr2', 'in2', 'q2', 'ey2', 'pl2']
+        if i > 0:
+            self.point_x = -self.width // 2 + (self.i - 1) * 2 * self.radius + 10
+        else:
+            self.point_x = self.width // 2 + self.i * 2 * self.radius - 10
+        self.point_y = self.height // 2 - 2 * self.radius - 5
+        self.filename = self.colours_dark[self.num-1] + '.png'
+        self.obj = ImageTk.PhotoImage(file=self.filename)
+        self.id = canvas.create_image(self.point_x, self.point_y, anchor=NW, image=self.obj)
         pass
 
     def resize(self, canvas):
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        self.radius = self.width // 40
-        self.center_x = -self.width // 2 + self.i * 2 * self.radius + 1
-        self.center_y = self.height // 2 - self.radius - 5
-        canvas.coords(self.id,
-                      self.center_x - self.radius, self.center_y - self.radius,
-                      self.center_x + self.radius, self.center_y + self.radius)
+        if self.i > 0:
+            self.point_x = -self.width // 2 + (self.i - 1) * 2 * self.radius + 10
+        else:
+            self.point_x = self.width // 2 + self.i * 2 * self.radius - 5
+        self.point_y = self.height // 2 - 2 * self.radius - 10
+        canvas.coords(self.id, self.point_x, self.point_y)
         pass
 
     def repaint(self, light, canvas):
         if light == 1:
-            canvas.itemconfigure(self.id, fill=self.colours_light[self.num-1])
+            self.filename = self.colours_light[self.num - 1] + '.png'
+            self.obj = ImageTk.PhotoImage(file=self.filename)
+            canvas.itemconfigure(self.id, image=self.obj)
         else:
-            canvas.itemconfigure(self.id, fill=self.colours_dark[self.num-1])
+            self.filename = self.colours_dark[self.num - 1] + '.png'
+            self.obj = ImageTk.PhotoImage(file=self.filename)
+            canvas.itemconfigure(self.id, image=self.obj)
         pass
 
     def push(self, event):
+        center = (self.point_x + self.radius, self.point_y + self.radius)
         x, y = event.x - self.width//2, event.y - self.height//2
-        if np.sqrt((x - self.center_x)**2 + (y - self.center_y)**2) < self.radius-1:
+        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.radius - 3:
+            print(self.num)
             return self.num
         else:
             return 0
