@@ -37,7 +37,6 @@ class Window:
         self.space.yview_moveto(.5)
 
         self.buttons = self.init_buttons()
-        # self.resize(1)
 
         pass
 
@@ -74,22 +73,52 @@ class RightPanel:
 class RoundButton:
     def __init__(self, canvas, i):
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        self.radius = self.width // 20
+        self.radius = self.width // 40
         self.i = i
         self.num = i % 12  # button serial number
         self.colours_light = ['#c00', '#0c0', '#00c', '#f40', '#408', '#408']
         self.colours_dark = ['#c55', '#0f8', '#dff', '#fe8', '#e8e', '#e8e']
-        self.id = canvas.create_oval((-self.width // 2 + (self.radius + 1) * i, self.height // 2 - self.radius - 5),
-                                     (-self.width//2 + (self.radius+1)*(i+1), self.height//2 - 5),
+        self.center_x = -self.width//2 + self.i * 2 * self.radius + 1
+        self.center_y = self.height // 2 - self.radius - 5
+        self.id = canvas.create_oval((self.center_x - self.radius, self.center_y - self.radius),
+                                     (self.center_x + self.radius, self.center_y + self.radius),
                                      fill=self.colours_dark[self.num-1], width=4)
         pass
 
     def resize(self, canvas):
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        self.radius = self.width // 20
-        canvas.coords(self.id, -self.width // 2 + (self.radius + 1) * self.i, self.height // 2 - self.radius - 5,
-                      -self.width//2 + (self.radius+1)*(self.i+1), self.height//2 - 5)
+        self.radius = self.width // 40
+        self.center_x = -self.width // 2 + self.i * 2 * self.radius + 1
+        self.center_y = self.height // 2 - self.radius - 5
+        canvas.coords(self.id,
+                      self.center_x - self.radius, self.center_y - self.radius,
+                      self.center_x + self.radius, self.center_y + self.radius)
         pass
+
+    def push(self, event):
+        if event.x - self.center <= self.radius:
+            if self.num == 1:
+                print(1)
+                # функция вывода окна с теоретическими выгладками
+            elif self.num == 2:
+                print(2)
+                # функция вывода окна с графиками
+            elif self.num == 3:
+                print(3)
+                # функция вывода окна с графиками
+            elif self.num == 4:
+                print(4)
+                # функция вывода окна с графиками
+            elif self.num == 5:
+                print(5)
+                change_view()  # функция смены вида
+            else:
+                print(6)
+                # функция запуска
+
+
+def change_view():
+    pass
 
 
 def create_body_image(space, body):

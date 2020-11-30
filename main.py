@@ -10,7 +10,7 @@ from window import *
 from model import *
 
 W = Window()
-W.root.bind('<Motion>', W.resize)
+W.root.bind('<Motion>', W.resize)  # это пока для удобства, всё будет работать по-другому
 Stop = False
 Objects = []
 
