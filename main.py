@@ -7,7 +7,7 @@ Main programme file
 
 from objects import *
 from window import *
-from model_Oxz import *
+from model import *
 
 W = Window()
 W.root.bind('<Motion>', W.resize)
@@ -17,17 +17,30 @@ Objects = []
 
 def get_objects():
     b1 = BigBody()
-    b1.x = 150
-    b1.Vy = 1
+    b1.a = 150
+    b1.b = 0
+    b1.c = 0
+    b1.Va = 0
+    b1.Vb = 1
+    b1.Vc = 0
     b1.color = "blue"
     
     b2 = BigBody()
-    b2.x = -150
-    b2.Vy = -1
+    b2.a = -150
+    b2.b = 0
+    b2.c = 0
+    b2.Va = 0
+    b2.Vb = -1
+    b2.Vc = 0
     b2.color = "green"
     
     b = SmallBody()
-    b.Vz = 2
+    b.a = 0
+    b.b = 0
+    b.c = 0
+    b.Va = 0
+    b.Vb = 0
+    b.Vc = 2
     
     return [b1, b2, b]
 
@@ -37,6 +50,12 @@ def moving():
     recalculate_objects_positions(Objects, dt/5)
 
     for i, body in enumerate(Objects):
+        for obj in Objects:
+            if obj.type == "smallbody":
+                continue
+            else:
+                obj.x = obj.a
+                obj.y = obj.b
         update_object_position(W.space, body)
         W.space.update()
 
