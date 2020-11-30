@@ -13,7 +13,7 @@ W = Window()
 W.root.bind('<Motion>', W.resize)  # это пока для удобства, всё будет работать по-другому
 Stop = False
 Objects = []
-
+P = Point()
 
 def get_objects():
     b1 = BigBody()
@@ -56,6 +56,7 @@ def moving():
             else:
                 obj.x = obj.a
                 obj.y = obj.b
+            P.draw_point(Objects, W)
         update_object_position(W.space, body)
         W.space.update()
 
@@ -86,7 +87,7 @@ def main():
     W.root.bind("<space>", W.repaint)
     W.space.bind("<Button-1>", W.push)
     W.root.bind("<Destroy>", close)
-     
+    
     moving()
     if not Stop:
         W.root.mainloop()

@@ -128,9 +128,23 @@ class RoundButton:
                 print(5)
                 change_view()  # функция смены вида
             else:
-                print(6)
-                # функция запуска
+                print(6)   # функция запуска
 
+
+class Point:
+    """Класс, описывающий точки траектории тел"""
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+
+        self.r = 1
+        pass
+    def draw_point(self, objects, w):
+        for body in objects:
+            self.x = body.x
+            self.y = body.y
+            w.space.create_oval([self.x - self.r, self.y - self.r], [self.x + self.r, self.y + self.r], fill="white")
+        pass
 
 def change_view():
     pass
