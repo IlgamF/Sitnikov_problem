@@ -36,14 +36,16 @@ class Window:
         self.space.xview_moveto(.5)
         self.space.yview_moveto(.5)
 
-        self.frame = Frame(self.root)
-        self.frame.pack(side=BOTTOM)
+        self.buttons = self.init_buttons()
+        # self.resize(1)
 
         pass
 
     def resize(self, event):
         w, h = self.root.winfo_width(), self.root.winfo_height()
         self.space.configure(scrollregion=(- w / 2, - h / 2, w / 2, h / 2))
+        for i in range(len(self.buttons)):
+            self.buttons[i].resize(self.space)
         pass
 
     def repaint(self, event):
@@ -52,28 +54,46 @@ class Window:
         pass
 
     def init_buttons(self):
-        canvas = self.root
-        theory = RoundButton('Т', canvas)
-        graphics = RoundButton('Г', canvas)
-        info = RoundButton('И', canvas)
-        quest = RoundButton('?', canvas)
-        return
+        canvas = self.space
+        theory = RoundButton(canvas, 1)
+        graphics = RoundButton(canvas, 2)
+        info = RoundButton(canvas, 3)
+        quest = RoundButton(canvas, 4)
+        eye = RoundButton(canvas, 17)
+        play = RoundButton(canvas, 18)
+        return [theory, graphics, info, quest, eye, play]
+
+
+class RightPanel:
+    def __init__(self, canvas, root):
+        w, h = root.winfo_width(), root.winfo_height()
+        print(w, h)
+        pass
 
 
 class RoundButton:
-    def __init__(self, filename, frame):
-        """
-        :param filename:
-        :param frame:
-        """
-        self.radius = frame.winfo_height() / 20
-        self.id = Button(frame, text=filename, width=10).pack(side=LEFT)
+    def __init__(self, canvas, i):
+        self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
+        self.radius = self.width // 20
+        self.i = i
+        self.num = i % 12  # button serial number
+        self.colours_light = ['#c00', '#0c0', '#00c', '#f40', '#408', '#408']
+        self.colours_dark = ['#c55', '#0f8', '#dff', '#fe8', '#e8e', '#e8e']
+        self.id = canvas.create_oval((-self.width // 2 + (self.radius + 1) * i, self.height // 2 - self.radius - 5),
+                                     (-self.width//2 + (self.radius+1)*(i+1), self.height//2 - 5),
+                                     fill=self.colours_dark[self.num-1], width=4)
+        pass
+
+    def resize(self, canvas):
+        self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
+        self.radius = self.width // 20
+        canvas.coords(self.id, -self.width // 2 + (self.radius + 1) * self.i, self.height // 2 - self.radius - 5,
+                      -self.width//2 + (self.radius+1)*(self.i+1), self.height//2 - 5)
         pass
 
 
 def create_body_image(space, body):
     """
-
     :param space:
     :param body:
     :return:
@@ -87,7 +107,6 @@ def create_body_image(space, body):
 
 def update_object_position(space, body):
     """
-
     :param space:
     :param body:
     :return:

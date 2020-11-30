@@ -10,6 +10,7 @@ from window import *
 from model_Oxz import *
 
 W = Window()
+W.root.bind('<Motion>', W.resize)
 Stop = False
 Objects = []
 
@@ -30,10 +31,10 @@ def get_objects():
     
     return [b1, b2, b]
 
+
 def moving():
     dt = 10
     recalculate_objects_positions(Objects, dt/5)
-    
 
     for i, body in enumerate(Objects):
         update_object_position(W.space, body)
@@ -61,8 +62,6 @@ def main():
         update_object_position(W.space, Objects[i])
 
     create_body_image(W.space, Objects[2])  # image of body b
-
-    W.init_buttons()
 
     W.space.bind("<Configure>", W.resize)
     W.root.bind("<space>", W.repaint)
