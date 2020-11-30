@@ -48,8 +48,18 @@ def body_force(body, objects):
 def recalculate_objects_positions(objects, dt):
     for body in objects:
         body_force(body, objects)
+    
+        
     for body in objects:
-        body_move(body, dt)
+        if body.type == "bigbody":
+            body_move(body, dt)
+            body.x = body.x
+            body.y = 0
+            body.z = 0
+        if body.type == "smallbody":
+            body_move(body, dt)
+            body.x = 0
+            body.y = body.z 
 
 
 if __name__ == "__main__":

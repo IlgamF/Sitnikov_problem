@@ -50,19 +50,23 @@ def body_force(body, objects):
 
 
 def recalculate_objects_positions(objects, dt):
-    for body in objects:
-        if body.type == "bigbody":
-            body.x = body.x
-            body.y = 0
-            body.z = 0
-        if body.type == "smallbody":
-            body.x = 0
-            body.y = body.z 
+    
+        
     for body in objects:
         body_force(body, objects)
     for body in objects:
         body_move(body, dt)
 
-
+        if body.type == "bigbody":
+            body.x = body.x
+            body.y = 0
+            body.Vx = body.Vx
+            body.Vy = 0
+        if body.type == "smallbody":
+            body.x = 0
+            body.y = body.z
+            body.Vx = 0
+            body.Vy = body.Vz
+    
 if __name__ == "__main__":
     print("This module is not for direct call!")

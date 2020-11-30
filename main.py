@@ -7,7 +7,7 @@ Main programme file
 
 from objects import *
 from window import *
-from model_Oxy import *
+from model_Oxz import *
 
 W = Window()
 Stop = False
@@ -17,12 +17,12 @@ Objects = []
 def get_objects():
     b1 = BigBody()
     b1.x = 150
-    b1.Vy = 1.5
+    b1.Vy = 1
     b1.color = "blue"
     
     b2 = BigBody()
     b2.x = -150
-    b2.Vy = -1.5
+    b2.Vy = -1
     b2.color = "green"
     
     b = SmallBody()
@@ -30,10 +30,11 @@ def get_objects():
     
     return [b1, b2, b]
 
-
 def moving():
     dt = 10
     recalculate_objects_positions(Objects, dt/5)
+    
+
     for i, body in enumerate(Objects):
         update_object_position(W.space, body)
         W.space.update()
