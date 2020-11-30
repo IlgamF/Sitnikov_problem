@@ -64,6 +64,8 @@ class Window:
         self.space.configure(scrollregion=(- w / 2, - h / 2, w / 2, h / 2))
         for i in range(len(self.buttons)):
             self.buttons[i].resize(self.space)
+        for k in range(len(self.axes)):
+            self.axes[k].resize(self.space)
         pass
 
     def repaint(self, event):
@@ -71,6 +73,8 @@ class Window:
         self.space.configure(bg=self.colours[self.light])
         for i in self.buttons:
             i.repaint(self.light, self.space)
+        for t in self.axes:
+            t.repaint(self.space, self.light)
         pass
 
     def push(self, event):
@@ -89,7 +93,9 @@ class RightPanel:
 class Axis:
     def __init__(self, canvas, width, height, i):
         self.width, self.height = width, height
+        self.colours = ['white', 'black']
         print(self.width, self.height)
+        self.i = i
         if i == 1:  # axis X
             self.start_x, self.finish_x = -self.width//2, self.width//2
             self.start_y, self.finish_y = 0, 0
@@ -99,6 +105,24 @@ class Axis:
         else:  # axis Z
             self.start_x = self.start_y = self.finish_x = self.finish_y = 0
         self.id = canvas.create_line(self.start_x, self.start_y, self.finish_x, self.finish_y, fill='white')
+        pass
+
+    def resize(self, canvas):
+        self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
+        if self.i == 1:  # axis X
+            self.start_x, self.finish_x = -self.width // 2, self.width // 2
+            self.start_y, self.finish_y = 0, 0
+        elif self.i == 2:  # axis Y
+            self.start_x, self.finish_x = 0, 0
+            self.start_y, self.finish_y = -self.height // 2, self.height // 2
+        else:  # axis Z
+            self.start_x = self.start_y = self.finish_x = self.finish_y = 0
+        canvas.coords(self.id, self.start_x, self.start_y, self.finish_x, self.finish_y)
+        pass
+
+    def repaint(self, canvas, light):
+        canvas.itemconfigure(self.id, fill=self.colours[light])
+        pass
 
 
 class RoundButton:
