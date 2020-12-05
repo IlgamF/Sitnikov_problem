@@ -9,6 +9,9 @@ import ctypes
 from tkinter import *
 import numpy as np
 from PIL import ImageTk, Image
+from window1 import *
+from graphics import *
+
 
 views = [['Oxy', 0, np.pi/2, 'off'],  # surface Oxy
          ['Oxz', np.pi/2, 'off', 0],  # surface Oxz
@@ -18,7 +21,6 @@ views = [['Oxy', 0, np.pi/2, 'off'],  # surface Oxy
          ['Zxy', np.pi/2, 0, np.pi/4],  # Z looks at us and surface Oxy
          ['XYz', np.pi/3, np.pi * 5/3, 0]]  # X, Y look at us and axis Z - up
 
-
 class Window:
     """
     Window class: carries parameters:
@@ -26,16 +28,16 @@ class Window:
     self.space - canvas
     self.color - canvas color
     """
-    def __init__(self):
+    def __init__(self, title, o):
         user32 = ctypes.windll.user32
         self.in_w = round(user32.GetSystemMetrics(0) / 16 * 8)
         self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
 
         self.root = Tk()  # create window
         self.root.geometry('%ix%i' % (self.in_w, self.in_h))
-        self.root.title('Sitnikov problem')  # window top-left title
+        self.root.title(title)  # window top-left title
         self.root.minsize()
-
+          
         self.light = 0  # defines color of canvas (black or white)
         self.colours = ('black', 'white')
 
@@ -52,6 +54,7 @@ class Window:
         self.buttons = self.init_buttons()
 
         self.axes = self.init_axes()
+        self.o = o
         pass
 
     def init_buttons(self):
@@ -91,6 +94,17 @@ class Window:
         a = 0
         for i in self.buttons:
             a += i.push(event)
+        if a == 1:
+            w1 = info_window('teor.txt')
+            w1.file_reading('teor.txt')
+        if a == 2:
+            draw_graph(self.o)
+        if a == 3:
+            w3 = info_window('help.txt')
+            w3.file_reading('help.txt')
+        if a == 4:
+            w4 = info_window('info.txt')
+            w4.file_reading('info.txt')
         if a == 5:
             self.view = (self.view + 1) % len(views)
             self.xy = self.reorganize_axes()
@@ -112,12 +126,38 @@ class Window:
                 axes[i - 1] = False
         return view, axes
 
+class info_window:
+    """
+    Window class: carries parameters:
+    self.root - window
+    self.space - canvas
+    self.color - canvas color
+    """
+    def __init__(self, filename):
+        user32 = ctypes.windll.user32
+        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 8)
+        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
 
-class RightPanel:
-    def __init__(self, canvas, root):
-        w, h = root.winfo_width(), root.winfo_height()
-        print(w, h)
+        self.root = Tk()  # create window
+        self.root.geometry('%ix%i' % (self.in_w, self.in_h))
+        self.root.title(filename)  # window top-left title
+        self.root.minsize()
+        
+        self.space = Canvas(self.root, bg='white')
+        self.space.pack(side=TOP, fill="both", expand=True)
+        self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,
+                                           self.in_w / 2, self.in_h / 2))
+
+
         pass
+
+    def file_reading(self, filename):
+        input = open(filename, 'r', encoding='utf-8')  
+        s = input.readlines()
+        for i in range(len(s)):
+            str = Label(self.root, text=s[i], font="TimesNewRoman 12", bg="white", fg="blue")
+            str.place(x=50, y= 5 + 20*i)
+
 
 
 class Axis:
@@ -152,58 +192,6 @@ class Axis:
     def repaint(self, canvas, light):
         canvas.itemconfigure(self.id, fill=self.colours[light])
         pass
-
-
-class RoundButton:
-    def __init__(self, canvas, width, height, i):
-        self.width, self.height = width, height
-        self.radius = 28
-        self.i = i
-        if i > 0:
-            self.num = i  # button serial number
-        else:
-            self.num = 7 + i
-        self.colours_dark = ['th1', 'gr1', 'in1', 'q1', 'ey1', 'pl1']
-        self.colours_light = ['th2', 'gr2', 'in2', 'q2', 'ey2', 'pl2']
-        if i > 0:
-            self.point_x = -self.width // 2 + (self.i - 1) * 2 * self.radius + 10
-        else:
-            self.point_x = self.width // 2 + self.i * 2 * self.radius - 10
-        self.point_y = self.height // 2 - 2 * self.radius - 5
-        self.filename = self.colours_dark[self.num-1] + '.png'
-        self.obj = ImageTk.PhotoImage(file=self.filename)
-        self.id = canvas.create_image(self.point_x, self.point_y, anchor=NW, image=self.obj)
-        pass
-
-    def resize(self, canvas):
-        self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        if self.i > 0:
-            self.point_x = -self.width // 2 + (self.i - 1) * 2 * self.radius + 10
-        else:
-            self.point_x = self.width // 2 + self.i * 2 * self.radius - 5
-        self.point_y = self.height // 2 - 2 * self.radius - 10
-        canvas.coords(self.id, self.point_x, self.point_y)
-        pass
-
-    def repaint(self, light, canvas):
-        if light == 1:
-            self.filename = self.colours_light[self.num - 1] + '.png'
-            self.obj = ImageTk.PhotoImage(file=self.filename)
-            canvas.itemconfigure(self.id, image=self.obj)
-        else:
-            self.filename = self.colours_dark[self.num - 1] + '.png'
-            self.obj = ImageTk.PhotoImage(file=self.filename)
-            canvas.itemconfigure(self.id, image=self.obj)
-        pass
-
-    def push(self, event):
-        center = (self.point_x + self.radius, self.point_y + self.radius)
-        x, y = event.x - self.width//2, event.y - self.height//2
-        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.radius - 3:
-            print(self.num)
-            return self.num
-        else:
-            return 0
 
 
 class Point:

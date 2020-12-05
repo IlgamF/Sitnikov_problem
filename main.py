@@ -9,11 +9,10 @@ from objects import *
 from window import *
 from model import *
 
-W = Window()
 Stop = False
 Objects = []
 P = Point()
-
+W = Window('Sitnikov problem', Objects)
 
 def get_objects():
     b1 = BigBody()
@@ -63,7 +62,8 @@ def main():
     print('Modelling started!')
 
     Objects = get_objects()
-
+    W.o = Objects
+    
     for i in (0, 1):  # images of bodies b1 and b2
         create_body_image(W, Objects[i])
         update_object_position(W, Objects[i])
@@ -85,3 +85,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
