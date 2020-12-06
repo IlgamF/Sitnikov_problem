@@ -85,6 +85,14 @@ class RoundButton:
         else:
             return 0
 
+    def change_img(self, w):
+        images = [['pl1', 'pl2'], ['pa1', 'pa2']]
+        process = int(w.process)
+        self.filename = images[process][w.light] + '.png'
+        self.obj = ImageTk.PhotoImage(file=self.filename)
+        w.space.itemconfigure(self.id, image=self.obj)
+        pass
+
 
 class Axis:
     def __init__(self, w):
@@ -174,6 +182,7 @@ class LeftPanel:
         self.left_top = (- width // 2 + 15, - height//2 + 15)
         self.right_bottom = (- width // 2 + 280, - height//2 + 210)
         self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#ccc')
+        self.info = 2
         pass
 
     def resize(self, w):

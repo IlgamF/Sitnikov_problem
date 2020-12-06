@@ -91,9 +91,13 @@ class Window:
 
     def repaint(self, event):
         self.light = abs(self.light - 1)
+
         self.space.configure(bg=self.colours[self.light])
+
         for i in self.buttons:
             i.repaint(self)
+        self.buttons[5].change_img(self)
+
         self.axes.repaint(self)
         pass
 
@@ -137,6 +141,7 @@ class Window:
             self.reorganize_axes()
         if a == 6:
             self.process = not self.process
+            self.buttons[5].change_img(self)
         pass
 
 

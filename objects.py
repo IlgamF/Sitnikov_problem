@@ -5,6 +5,8 @@
 Module for physical bodies description
 """
 
+import numpy as np
+
 
 class BigBody:
     """Класс, описывающий тело большей массы."""
@@ -22,6 +24,14 @@ class BigBody:
         self.Va, self.Vb, self.Vc = 0, 0, 0
         self.Fa, self.Fb, self.Fc = 0, 0, 0
 
+    def push(self, event):
+        center = (self.x, self.y)
+        x, y = event.x, event.y
+        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R - 1:
+            return True
+        else:
+            return False
+
 
 class SmallBody:
     """Класс, описывающий тело меньшей массы."""
@@ -37,6 +47,14 @@ class SmallBody:
         self.a, self.b, self.c = 0, 0, 0
         self.Va, self.Vb, self.Vc = 0, 0, 0
         self.Fa, self.Fb, self.Fc = 0, 0, 0
+
+    def push(self, event):
+        center = (self.x, self.y)
+        x, y = event.x, event.y
+        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R - 1:
+            return True
+        else:
+            return False
 
 
 if __name__ == "__main__":

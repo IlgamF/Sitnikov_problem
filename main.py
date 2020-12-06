@@ -53,6 +53,9 @@ def close(event):
 
 def push(event):
     W.push(event)
+    for i in range(len(Objects)):
+        if Objects[i].push(event):
+            W.l_panel.info = i
     if W.process:
         moving()
     pass
