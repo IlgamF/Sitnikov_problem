@@ -7,6 +7,7 @@ Module for drawing graphics
 
 from matplotlib import pyplot as pl
 
+
 def py(a, b, c):
     return (a*a + b*b + c*c)**0.5
 
@@ -20,7 +21,8 @@ def data_list(obj):
 
 def draw_graph(objects):
     """
-    Функция строит графики зависимость v(r) для каждого тел"""
+    Функция строит графики зависимость v(r) для каждого тел
+    """
     for obj in objects:
         data = data_list(obj)
         pl.title(r'$Фазовый портрет$')
@@ -33,4 +35,3 @@ def draw_graph(objects):
 
 if __name__ == "__main__":
     print("This module is not for direct call!")
-    

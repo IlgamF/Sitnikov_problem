@@ -19,7 +19,8 @@ views = [['Oxy', 0, np.pi/2, 'off'],  # surface Oxy
          ['Xyz', np.pi/2, np.pi/2, 0],  # x looks at us and surface Oyz
          ['Yxz', np.pi/2, np.pi * 3/4, 0],  # y looks at us and surface Oxz
          ['Zxy', np.pi/2, 0, np.pi/4],  # Z looks at us and surface Oxy
-         ['XYz', np.pi/3, np.pi * 5/3, 0]]  # X, Y look at us and axis Z - up
+         ['XYz', np.pi/3, np.pi * 1/3, 0]]  # X, Y look at us and axis Z - up
+
 
 class Window:
     """
@@ -37,7 +38,7 @@ class Window:
         self.root.geometry('%ix%i' % (self.in_w, self.in_h))
         self.root.title(title)  # window top-left title
         self.root.minsize()
-          
+
         self.light = 0  # defines color of canvas (black or white)
         self.colours = ('black', 'white')
 
@@ -48,12 +49,19 @@ class Window:
         self.space.xview_moveto(.5)
         self.space.yview_moveto(.5)
 
+        self.process = False
+
         self.view = 0
+        self.axes_alive = [True, True, False]
         self.xy = self.reorganize_axes()
+        self.axes = self.init_axes()
 
         self.buttons = self.init_buttons()
 
         self.axes = self.init_axes()
+        self.panel = RightPanel(self)
+
+        self.additional = 0  # defines new windows
         self.o = o
         pass
 
@@ -67,17 +75,27 @@ class Window:
     def init_axes(self):
         axes = []
         for i in (1, 2, 3):
-            a = Axis(self.space, self.in_w, self.in_h, i)
+            a = Axis(self, i)
             axes.append(a)
         return axes
 
     def resize(self, event):
         w, h = self.root.winfo_width(), self.root.winfo_height()
+
         self.space.configure(scrollregion=(- w / 2, - h / 2, w / 2, h / 2))
+
         for i in range(len(self.buttons)):
             self.buttons[i].resize(self.space)
-        for k in range(len(self.axes)):
-            self.axes[k].resize(self.space)
+
+        if self.axes_alive.count(False) > 0:
+            for i in self.axes:
+                i.resize_surface(self)
+        else:
+            for i in self.axes:
+                i.resize_general(self)
+
+        self.panel.resize(self)
+
         self.in_w, self.in_h = w, h
         pass
 
@@ -85,48 +103,74 @@ class Window:
         self.light = abs(self.light - 1)
         self.space.configure(bg=self.colours[self.light])
         for i in self.buttons:
-            i.repaint(self.light, self.space)
+            i.repaint(self)
         for t in self.axes:
-            t.repaint(self.space, self.light)
+            t.repaint(self)
         pass
+
+    def reorganize_axes(self):
+        view = views[self.view]
+        self.axes_alive = [True, True, True]
+        angles = [(0, 0), (0, 0), (0, 0)]
+        for i in range(len(view)):
+            print(view[i])
+            if i == 0:
+                continue
+            if view[i] == 'off':  # switches off the axis, if it is not used
+                self.axes_alive[i - 1] = False
+                angles[i - 1] = (0, 0)
+            else:
+                phi = view[i]
+                angles[i-1] = (np.sin(phi), np.cos(phi))
+        return angles
 
     def push(self, event):
         a = 0
         for i in self.buttons:
             a += i.push(event)
         if a == 1:
-            w1 = info_window('teor.txt')
-            w1.file_reading('teor.txt')
+            self.additional = InfoWindow('teor.txt')
+            self.additional.file_reading('teor.txt')
+            self.process = False
         if a == 2:
+            self.process = False
             draw_graph(self.o)
         if a == 3:
-            w3 = info_window('help.txt')
-            w3.file_reading('help.txt')
+            self.additional = InfoWindow('help.txt')
+            self.additional.file_reading('help.txt')
+            self.process = False
         if a == 4:
-            w4 = info_window('info.txt')
-            w4.file_reading('info.txt')
+            self.additional = InfoWindow('info.txt')
+            self.additional.file_reading('info.txt')
+            self.process = False
         if a == 5:
             self.view = (self.view + 1) % len(views)
             self.xy = self.reorganize_axes()
+            self.process = False
+        if a == 6:
+            self.process = not self.process
+        print(self.process)
         pass
 
-    def reorganize_axes(self):
-        """
-        Switches axes on or off in dependence on w.view
-        :param w: Window
-        :return: x_axis, y_axis, z_axis
-        """
-        view = views[self.view]
-        print(view[0])
-        axes = [True, True, True]
-        for i in range(len(view)):
-            if i == 0:
-                print(view[i])
-            elif view[i] == 'off':  # switches off the axis, if it is not used
-                axes[i - 1] = False
-        return view, axes
+    def control(self):
+        if self.additional == 0:
+            pass
+        else:
+            self.additional.root.bind('<Destroy>', self.destroy)
+            pass
 
-class info_window:
+    def destroy(self, event):
+        self.process = True
+        print(self.process)
+
+    def stop(self):
+        if self.additional == 0:
+            return False
+        else:
+            return self.additional.close
+
+
+class InfoWindow:
     """
     Window class: carries parameters:
     self.root - window
@@ -138,6 +182,8 @@ class info_window:
         self.in_w = round(user32.GetSystemMetrics(0) / 16 * 8)
         self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
 
+        self.close = False
+
         self.root = Tk()  # create window
         self.root.geometry('%ix%i' % (self.in_w, self.in_h))
         self.root.title(filename)  # window top-left title
@@ -148,49 +194,14 @@ class info_window:
         self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,
                                            self.in_w / 2, self.in_h / 2))
 
-
         pass
 
     def file_reading(self, filename):
-        input = open(filename, 'r', encoding='utf-8')  
-        s = input.readlines()
+        inp = open(filename, 'r', encoding='utf-8')
+        s = inp.readlines()
         for i in range(len(s)):
-            str = Label(self.root, text=s[i], font="TimesNewRoman 12", bg="white", fg="blue")
-            str.place(x=50, y= 5 + 20*i)
-
-
-
-class Axis:
-    def __init__(self, canvas, width, height, i):
-        self.in_w, self.in_h = width, height
-        self.width, self.height = width, height
-        self.colours = ['white', 'black']
-        print(self.width, self.height)
-        self.i = i
-        if i == 1:  # axis X
-            self.start_x, self.finish_x = -self.width//2, self.width//2
-            self.start_y, self.finish_y = 0, 0
-        elif i == 2:  # axis Y
-            self.start_x, self.finish_x = 0, 0
-            self.start_y, self.finish_y = -self.height // 2, self.height // 2
-        else:  # axis Z
-            self.start_x = self.start_y = self.finish_x = self.finish_y = 0
-        self.id = canvas.create_line(self.start_x, self.start_y, self.finish_x, self.finish_y, fill='white')
-        pass
-
-    def resize(self, canvas):
-        self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
-        rec_x, rec_y = self.width / self.in_w, self.height / self.in_h
-        self.in_w, self.in_h = self.width, self.height
-        self.start_x *= rec_x
-        self.start_y *= rec_y
-        self.finish_x *= rec_x
-        self.finish_y *= rec_y
-        canvas.coords(self.id, self.start_x, self.start_y, self.finish_x, self.finish_y)
-        pass
-
-    def repaint(self, canvas, light):
-        canvas.itemconfigure(self.id, fill=self.colours[light])
+            st = Label(self.root, text=s[i], font="TimesNewRoman 12", bg="white", fg="blue")
+            st.place(x=50, y=5+20*i)
         pass
 
 
@@ -213,33 +224,47 @@ class Point:
 
 
 def reorganize_coordinates(w, body):
-    view, axes = w.xy
+    axes, angles = w.axes_alive, w.xy
+    phi_x, phi_y, phi_z = angles
     da, db, dc = (0, 0), (0, 0), (0, 0)
     if axes[0]:  # if x exists
-        da = (-body.a * np.sin(view[1]), body.a * np.cos(view[1]))
+        da = (-body.a * phi_x[0], body.a * phi_x[1])
     if axes[1]:
-        db = (body.b * np.sin(view[2]), body.b * np.cos(view[2]))
+        db = (body.b * phi_y[0], body.b * phi_y[1])
     if axes[2]:
-        dc = (body.c * np.sin(view[3]), - body.c * np.cos(view[3]))
+        dc = (body.c * phi_z[0], - body.c * phi_z[1])
     body.x, body.y = da[0] + db[0] + dc[0], da[1] + db[1] + dc[1]
+    pass
+
+
+def change_radius(w, body):
+    # функция должна изменять радиус тел, но не изменяет
+    axes, angles = w.axes_alive, w.xy
+    coordinates = [body.a, body.b, body.c]
+    k = 0.00005
+    for i in range(len(angles)):
+        if not axes[i]:  # if axis is orthogonal to the screen
+            body.R += k * coordinates[i]
+        elif 0.05 < angles[i][0] < 0.95:  # if sin(phi) is not 0 or 1
+            body.R += k * coordinates[i]
     pass
 
 
 def create_body_image(w, body):
     reorganize_coordinates(w, body)
-    x = body.x
-    y = body.y
-    r = body.R
-    body.image = w.space.create_oval([x - r, y - r], [x + r, y + r], fill=body.color)
+    # change_radius(w, body)
+    body.image = w.space.create_oval([body.x - body.R, body.y - body.R],
+                                     [body.x + body.R, body.y + body.R],
+                                     fill=body.color)
     return
 
 
 def update_object_position(w, body):
+    # change_radius(w, body)
     reorganize_coordinates(w, body)
-    x = body.x
-    y = body.y
-    r = body.R
-    w.space.coords(body.image, x - r, y - r, x + r, y + r)
+    w.space.coords(body.image,
+                   body.x - body.R, body.y - body.R,
+                   body.x + body.R, body.y + body.R)
     w.space.update()
     return
 

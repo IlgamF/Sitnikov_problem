@@ -9,10 +9,11 @@ from objects import *
 from window import *
 from model import *
 
-Stop = False
+Close = False
 Objects = []
 P = Point()
 W = Window('Sitnikov problem', Objects)
+
 
 def get_objects():
     b1 = BigBody()
@@ -33,27 +34,28 @@ def get_objects():
 
 def moving():
     dt = 100
-    recalculate_objects_positions(Objects, dt/400)
+    recalculate_objects_positions(Objects, dt/200)
 
     for i, body in enumerate(Objects):
-        for obj in Objects:
-            if obj.type == "smallbody":
-                continue
-            else:
-                obj.x = obj.a
-                obj.y = obj.b
-            # P.draw_point(Objects, W)
         update_object_position(W, body)
         W.space.update()
 
-    W.space.after(101 - dt, moving)
+    if W.process:
+        W.space.after(101 - dt, moving)
     pass
 
 
 def close(event):
-    global Stop
-    Stop = True
-    return
+    global Close
+    Close = True
+    pass
+
+
+def push(event):
+    W.push(event)
+    if W.process:
+        moving()
+    pass
 
 
 def main():
@@ -70,14 +72,15 @@ def main():
 
     create_body_image(W, Objects[2])  # image of body
 
-    moving()
+    if W.process:
+        moving()
 
     W.space.bind("<Configure>", W.resize)
     W.root.bind("<space>", W.repaint)
-    W.space.bind("<Button-1>", W.push)
+    W.space.bind("<Button-1>", push)
     W.root.bind("<Destroy>", close)
 
-    if not Stop:
+    if not Close:
         W.root.mainloop()
     print('Modelling finished!')
     return
