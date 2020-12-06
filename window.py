@@ -6,20 +6,17 @@ Visualization module. Describes main screen processes
 """
 
 import ctypes
-from tkinter import *
-import numpy as np
-from PIL import ImageTk, Image
 from window1 import *
 from graphics import *
 
 
-views = [['Oxy', 0, np.pi/2, 'off'],  # surface Oxy
-         ['Oxz', np.pi/2, 'off', 0],  # surface Oxz
-         ['Oyz', 'off', np.pi/2, 0],  # surface Oyz
-         ['Xyz', np.pi/2, np.pi/2, 0],  # x looks at us and surface Oyz
-         ['Yxz', np.pi/2, np.pi * 3/4, 0],  # y looks at us and surface Oxz
-         ['Zxy', np.pi/2, 0, np.pi/4],  # Z looks at us and surface Oxy
-         ['XYz', np.pi/3, np.pi * 1/3, 0]]  # X, Y look at us and axis Z - up
+views = [['Oxy', 3*np.pi/2, np.pi, 'off'],  # surface Oxy
+         ['Oxz', 3*np.pi/2, 'off', np.pi],  # surface Oxz
+         ['Oyz', 'off', 3*np.pi/2, np.pi],  # surface Oyz
+         ['Xyz', np.pi/4, 3*np.pi/2, np.pi],  # x looks at us and surface Oyz
+         ['Yxz', 3*np.pi/2, np.pi/4, np.pi],  # y looks at us and surface Oxz
+         ['Zxy', 3*np.pi/2, np.pi, np.pi/4],  # Z looks at us and surface Oxy
+         ['XYz', np.pi/3, 5*np.pi/3, np.pi]]  # X, Y look at us and axis Z - up
 
 
 class Window:
@@ -53,12 +50,12 @@ class Window:
 
         self.view = 0
         self.axes_alive = [True, True, False]
-        self.xy = self.reorganize_axes()
-        self.axes = self.init_axes()
+        self.axes = Axis(self)
+        self.angles = [(0, 0), (0, 0), (0, 0)]
+        self.reorganize_axes()
 
         self.buttons = self.init_buttons()
 
-        self.axes = self.init_axes()
         self.panel = RightPanel(self)
 
         self.additional = 0  # defines new windows
@@ -72,13 +69,6 @@ class Window:
             buttons.append(but)
         return buttons
 
-    def init_axes(self):
-        axes = []
-        for i in (1, 2, 3):
-            a = Axis(self, i)
-            axes.append(a)
-        return axes
-
     def resize(self, event):
         w, h = self.root.winfo_width(), self.root.winfo_height()
 
@@ -88,11 +78,9 @@ class Window:
             self.buttons[i].resize(self.space)
 
         if self.axes_alive.count(False) > 0:
-            for i in self.axes:
-                i.resize_surface(self)
+            self.axes.resize_surface(self)
         else:
-            for i in self.axes:
-                i.resize_general(self)
+            self.axes.resize_general(self)
 
         self.panel.resize(self)
 
@@ -104,25 +92,24 @@ class Window:
         self.space.configure(bg=self.colours[self.light])
         for i in self.buttons:
             i.repaint(self)
-        for t in self.axes:
-            t.repaint(self)
+        self.axes.repaint(self)
         pass
 
     def reorganize_axes(self):
         view = views[self.view]
         self.axes_alive = [True, True, True]
-        angles = [(0, 0), (0, 0), (0, 0)]
+        self.angles = [(0, 0), (0, 0), (0, 0)]
         for i in range(len(view)):
-            print(view[i])
             if i == 0:
                 continue
             if view[i] == 'off':  # switches off the axis, if it is not used
                 self.axes_alive[i - 1] = False
-                angles[i - 1] = (0, 0)
+                self.angles[i - 1] = (0, 0)
             else:
                 phi = view[i]
-                angles[i-1] = (np.sin(phi), np.cos(phi))
-        return angles
+                self.angles[i-1] = (np.sin(phi), np.cos(phi))
+        self.axes.redraw(self)
+        pass
 
     def push(self, event):
         a = 0
@@ -145,10 +132,9 @@ class Window:
             self.process = False
         if a == 5:
             self.view = (self.view + 1) % len(views)
-            self.xy = self.reorganize_axes()
+            self.reorganize_axes()
         if a == 6:
             self.process = not self.process
-        print(self.process)
         pass
 
 
@@ -206,35 +192,21 @@ class Point:
 
 
 def reorganize_coordinates(w, body):
-    axes, angles = w.axes_alive, w.xy
-    phi_x, phi_y, phi_z = angles
+    axes, angles = w.axes_alive, w.angles
+    phi_x, phi_y, phi_z = angles[0], angles[1], angles[2]
     da, db, dc = (0, 0), (0, 0), (0, 0)
     if axes[0]:  # if x exists
         da = (-body.a * phi_x[0], body.a * phi_x[1])
     if axes[1]:
-        db = (body.b * phi_y[0], body.b * phi_y[1])
+        db = (-body.b * phi_y[0], body.b * phi_y[1])
     if axes[2]:
-        dc = (body.c * phi_z[0], - body.c * phi_z[1])
+        dc = (-body.c * phi_z[0], body.c * phi_z[1])
     body.x, body.y = da[0] + db[0] + dc[0], da[1] + db[1] + dc[1]
-    pass
-
-
-def change_radius(w, body):
-    # функция должна изменять радиус тел, но не изменяет
-    axes, angles = w.axes_alive, w.xy
-    coordinates = [body.a, body.b, body.c]
-    k = 0.00005
-    for i in range(len(angles)):
-        if not axes[i]:  # if axis is orthogonal to the screen
-            body.R += k * coordinates[i]
-        elif 0.05 < angles[i][0] < 0.95:  # if sin(phi) is not 0 or 1
-            body.R += k * coordinates[i]
     pass
 
 
 def create_body_image(w, body):
     reorganize_coordinates(w, body)
-    change_radius(w, body)
     body.image = w.space.create_oval([body.x - body.R, body.y - body.R],
                                      [body.x + body.R, body.y + body.R],
                                      fill=body.color)
@@ -242,7 +214,6 @@ def create_body_image(w, body):
 
 
 def update_object_position(w, body):
-    change_radius(w, body)
     reorganize_coordinates(w, body)
     w.space.coords(body.image,
                    body.x - body.R, body.y - body.R,
