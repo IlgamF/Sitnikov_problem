@@ -20,7 +20,7 @@ class RightPanel:
 
     def resize(self, w):
         width, height = w.space.winfo_width(), w.space.winfo_height()
-        self.left_top = (width * 3/8, - height//2 + 15)
+        self.left_top = (width // 2 - 115, - height//2 + 15)
         self.right_bottom = (width // 2 - 15, height // 2 - 75)
         w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
         pass
