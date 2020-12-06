@@ -10,6 +10,15 @@ import numpy as np
 from PIL import ImageTk, Image
 
 
+def point_towards(w, i):
+    tg = w.angles[i][0] / w.angles[i][1]
+    return [(-w.in_h / 2 * tg, w.in_h / 2), (w.in_h / 2 * tg, -w.in_h / 2)]
+
+
+def round_pair(a):
+    return [round(a[0], 0), round(a[1], 0)]
+
+
 class RightPanel:
     def __init__(self, w):
         width, height = w.in_w, w.in_h
@@ -75,15 +84,6 @@ class RoundButton:
             return self.num
         else:
             return 0
-
-
-def point_towards(w, i):
-    tg = w.angles[i][0] / w.angles[i][1]
-    return [(-w.in_h / 2 * tg, w.in_h / 2), (w.in_h / 2 * tg, -w.in_h / 2)]
-
-
-def round_pair(a):
-    return [round(a[0], 0), round(a[1], 0)]
 
 
 class Axis:
@@ -165,4 +165,20 @@ class Axis:
         w.space.coords(self.id_x, self.x[0][0], self.x[0][1], self.x[1][0], self.x[1][1])
         w.space.coords(self.id_y, self.y[0][0], self.y[0][1], self.y[1][0], self.y[1][1])
         w.space.coords(self.id_z, self.z[0][0], self.z[0][1], self.z[1][0], self.z[1][1])
+        pass
+
+
+class LeftPanel:
+    def __init__(self, w):
+        width, height = w.in_w, w.in_h
+        self.left_top = (- width // 2 + 15, - height//2 + 15)
+        self.right_bottom = (- width // 2 + 280, - height//2 + 210)
+        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#ccc')
+        pass
+
+    def resize(self, w):
+        width, height = w.space.winfo_width(), w.space.winfo_height()
+        self.left_top = (- width // 2 + 15, - height//2 + 15)
+        self.right_bottom = (- width // 2 + 280, - height//2 + 210)
+        w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
         pass

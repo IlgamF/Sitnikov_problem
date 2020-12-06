@@ -56,7 +56,8 @@ class Window:
 
         self.buttons = self.init_buttons()
 
-        self.panel = RightPanel(self)
+        self.r_panel = RightPanel(self)
+        self.l_panel = LeftPanel(self)
 
         self.additional = 0  # defines new windows
         self.o = o
@@ -82,7 +83,8 @@ class Window:
         else:
             self.axes.resize_general(self)
 
-        self.panel.resize(self)
+        self.r_panel.resize(self)
+        self.l_panel.resize(self)
 
         self.in_w, self.in_h = w, h
         pass
