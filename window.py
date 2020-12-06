@@ -152,23 +152,6 @@ class Window:
         print(self.process)
         pass
 
-    def control(self):
-        if self.additional == 0:
-            pass
-        else:
-            self.additional.root.bind('<Destroy>', self.destroy)
-            pass
-
-    def destroy(self, event):
-        self.process = True
-        print(self.process)
-
-    def stop(self):
-        if self.additional == 0:
-            return False
-        else:
-            return self.additional.close
-
 
 class InfoWindow:
     """
