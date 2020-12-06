@@ -146,7 +146,6 @@ class Window:
         if a == 5:
             self.view = (self.view + 1) % len(views)
             self.xy = self.reorganize_axes()
-            self.process = False
         if a == 6:
             self.process = not self.process
         print(self.process)
@@ -235,7 +234,7 @@ def change_radius(w, body):
 
 def create_body_image(w, body):
     reorganize_coordinates(w, body)
-    # change_radius(w, body)
+    change_radius(w, body)
     body.image = w.space.create_oval([body.x - body.R, body.y - body.R],
                                      [body.x + body.R, body.y + body.R],
                                      fill=body.color)
@@ -243,7 +242,7 @@ def create_body_image(w, body):
 
 
 def update_object_position(w, body):
-    # change_radius(w, body)
+    change_radius(w, body)
     reorganize_coordinates(w, body)
     w.space.coords(body.image,
                    body.x - body.R, body.y - body.R,
