@@ -154,8 +154,8 @@ class InfoWindow:
     """
     def __init__(self, filename):
         user32 = ctypes.windll.user32
-        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 8)
-        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
+        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 6)
+        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 4.5)
 
         self.close = False
 
@@ -175,7 +175,7 @@ class InfoWindow:
         inp = open(filename, 'r', encoding='utf-8')
         s = inp.readlines()
         for i in range(len(s)):
-            st = Label(self.root, text=s[i], font="TimesNewRoman 12", bg="white", fg="blue")
+            st = Label(self.root, text=s[i], font="TimesNewRoman 12", bg="white", fg="black")
             st.place(x=50, y=5+20*i)
         pass
 
