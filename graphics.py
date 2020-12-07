@@ -5,30 +5,28 @@
 Module for drawing graphics
 """
 
+
 from matplotlib import pyplot as pl
 
 
-def py(a, b, c):
-    return (a*a + b*b + c*c)**0.5
 
 
-def data_list(obj):
-    data = []
-    data.append(py(obj.a, obj.b, obj.c))
-    data.append(py(obj.Va, obj.Vb, obj.Vc))
-    return data
+def draw_graph(objects, output_filename):
 
-
-def draw_graph(objects):
-    """
-    Функция строит графики зависимость v(r) для каждого тел
-    """
-    for obj in objects:
-        data = data_list(obj)
-        pl.title(r'$Фазовый портрет$')
-        pl.ylabel(r'$v - скорость тела$')
-        pl.xlabel(r'$r - расстояние$')
-        pl.plot(data[0], data[1])  # v(r)
+    distance = []
+    velocity = []
+    with open(output_filename, 'r') as output_file:
+        for line in output_file:
+            if line.split() == []:
+                continue
+            else:
+                distance.append(float(line.split()[0]))
+                velocity.append(float(line.split()[1]))
+    
+    pl.title(r'$Фазовый портрет$')
+    pl.ylabel(r'$v - скорость тела$')
+    pl.xlabel(r'$r - расстояние$')
+    pl.plot(distance, velocity)  # v(r)
     pl.show()
     pass
 

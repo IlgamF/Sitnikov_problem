@@ -127,7 +127,7 @@ class Window:
             self.process = False
         if a == 2:
             self.process = False
-            draw_graph(self.o)
+            draw_graph(self.o, 'output.txt')
         if a == 3:
             self.additional = InfoWindow('info.txt')
             self.additional.file_reading('info.txt')
