@@ -184,7 +184,7 @@ class LeftPanel:
     def __init__(self, w):
         width, height = w.in_w, w.in_h
         self.left_top = (- width // 2 + 15, - height//2 + 15)
-        self.right_bottom = (- width // 2 + 280, - height//2 + 210)
+        self.right_bottom = (- width // 2 + 350, - height//2 + 135)
         self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#ccc')
         self.info = 0
         pass
@@ -200,13 +200,18 @@ class LeftPanel:
         # функция должна выводить информацию о координате и скорости тел
         width, height = w.space.winfo_width(), w.space.winfo_height()
         if self.info.type == "big body":
-            name = 'Массивное тело \n'
+            text_name = 'Массивное тело \n'
         else:
-            name = 'Тело малой массы \n'
-        mass = str(self.info.m) + 'отн. ед. \n'
-        velocity = str(round(sum_of_squares(self.info.Va, self.info.Vb, self.info.Vc), 2)) + 'у.е \n'
-        accel = str(round(sum_of_squares(self.info.Fa, self.info.Fb, self.info.Fc) / self.info.m, 3)) + 'у.е \n'
-        txt = name + mass + velocity + accel
-        st = Label(w.space, text=txt, font="TimesNewRoman 12", bg="white", fg="blue")
-        st.place(x=- width // 2 + 30, y=- height//2 + 30)
+            text_name = 'Тело малой массы \n'
+        dist = round(sum_of_squares(self.info.a, self.info.b, self.info.c), 2)
+        vel = round(sum_of_squares(self.info.Va, self.info.Vb, self.info.Vc), 2)
+        accel = round(sum_of_squares(self.info.Fa, self.info.Fb, self.info.Fc) / self.info.m, 3)
+        text_mass = 'Масса тела: ' + str(self.info.m) + ' отн. ед. \n'
+        text_distance = 'Расстояние от центра системы: ' + str(dist) + ' у.е. \n'
+        text_velocity = 'Скорость тела: ' + str(vel) + ' у.е \n'
+        text_accel = 'Ускорение тела: ' + str(accel) + ' у.е \n'
+
+        txt = text_name + text_mass + text_distance + text_velocity + text_accel
+        st = Label(w.space, text=txt, font="Arial 12", bg="#ccc", fg="blue", justify='left')
+        st.place(x=17, y=17)
         pass

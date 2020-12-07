@@ -11,6 +11,7 @@ from model import *
 
 Close = False
 Objects = []
+Time_counter = 0
 P = Point()
 W = Window('Sitnikov problem', Objects)
 
@@ -33,8 +34,13 @@ def get_objects():
 
 
 def moving():
+    global Time_counter
     dt = 100
+    Time_counter += 1
     recalculate_objects_positions(Objects, dt/200)
+    if Time_counter % 40 == 0:
+        Time_counter = 0
+        W.l_panel.show_info(W)
 
     for i, body in enumerate(Objects):
         update_object_position(W, body)
@@ -54,10 +60,12 @@ def close(event):
 def push(event):
     W.push(event)
     for i in range(len(Objects)):
+        print(event.x, Objects[i].x)
         if Objects[i].push(event):
             W.l_panel.info = i
             break
     if W.process:
+        W.l_panel.show_info(W)
         moving()
     pass
 
@@ -78,7 +86,6 @@ def main():
 
     if W.l_panel.info == 0:
         W.l_panel.info = Objects[2]
-    W.l_panel.show_info(W)
 
     if W.process:
         moving()
