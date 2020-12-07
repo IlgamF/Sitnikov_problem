@@ -37,9 +37,9 @@ class Window:
         self.root.minsize()
 
         self.light = 0  # defines color of canvas (black or white)
-        self.colours = ('black', 'white')
+        self.colours = ('#161a1e', '#dcecf5')
 
-        self.space = Canvas(self.root, bg='black')
+        self.space = Canvas(self.root, bg=self.colours[self.light])
         self.space.pack(side=TOP, fill="both", expand=True)
         self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,
                                            self.in_w / 2, self.in_h / 2))
@@ -141,6 +141,7 @@ class Window:
             self.reorganize_axes()
         if a == 6:
             self.process = not self.process
+        if a != 0:
             self.buttons[5].change_img(self)
         pass
 

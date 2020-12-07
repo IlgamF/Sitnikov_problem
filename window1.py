@@ -104,31 +104,43 @@ class Axis:
         self.x = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
         self.y = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         self.z = [(0, 0), (0, 0)]
-        self.colors = ['white', 'black']
+        self.colors = [w.colours[1], w.colours[0]]
         self.alive = w.axes_alive  # [T/F, T/F, T/F]
+
         self.id_x = w.space.create_line(self.x[0], self.x[1], fill=self.colors[w.light])
         self.id_y = w.space.create_line(self.y[0], self.y[1], fill=self.colors[w.light])
         self.id_z = w.space.create_line(self.z[0], self.z[1], fill=self.colors[w.light])
+
+        self.name_x = Label(w.space, text='x', font="Arial 15", bg=self.colors[w.light-1], fg=self.colors[w.light])
+        self.name_y = Label(w.space, text='y', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
+        self.name_z = Label(w.space, text='z', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
+
+        self.name_x.place(x=(self.x[1][0] + 3 * w.in_w // 8), y=(self.x[1][1] + w.in_h // 2))
+        self.name_y.place(x=(self.y[0][0] + w.in_w // 2 + 10), y=(self.x[0][1] + 10))
         pass
 
     def repaint(self, w):
         for i in (self.id_x, self.id_y, self.id_z):
             w.space.itemconfigure(i, fill=self.colors[w.light])
+
+        for j in (self.name_x, self.name_y, self.name_z):
+            j.configure(bg=self.colors[w.light-1], fg=self.colors[w.light])
         pass
 
     def redraw(self, w):
         x_pair = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
         y_pair = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         zero = [(0, 0), (0, 0)]
-        print(w.angles)
-        print(w.axes_alive)
+
         if 0.05 < abs(w.angles[0][0]) < 0.95:
             self.x = point_towards(w, 0)
+            self.name_x.place(x=(self.x[0][0] + w.in_w / 2 + 100), y=(self.x[0][1]) + w.in_h / 2 - 150)
         if 0.05 < abs(w.angles[1][0]) < 0.95:
-            print('good!')
             self.y = point_towards(w, 1)
+            self.name_y.place(x=(self.y[0][0] + w.in_w / 2 + 100), y=(self.y[0][1]) + w.in_h / 2 - 150)
         if 0.05 < abs(w.angles[2][0]) < 0.95:
             self.z = point_towards(w, 2)
+            self.name_z.place(x=(self.z[0][0] + w.in_w / 2 + 100), y=(self.z[0][1]) + w.in_h / 2 - 150)
 
         if not w.axes_alive[0]:
             self.x = zero
@@ -168,6 +180,7 @@ class Axis:
             self.z = [(0, -height / 2), (0, height / 2)]
 
         self.re_cord(w)
+        # FIXME сделать переорганизацию подписей к осям
         pass
 
     def resize_general(self, w):
