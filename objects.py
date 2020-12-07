@@ -26,8 +26,8 @@ class BigBody:
 
     def push(self, event):
         center = (self.x, self.y)
-        x, y = event.x, event.y
-        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R - 1:
+        x, y = event.x - event.widget.winfo_width()//2, event.y - event.widget.winfo_height()//2
+        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R:
             return True
         else:
             return False
@@ -39,7 +39,7 @@ class SmallBody:
         self.type = "small body"
         self.m = 1
         self.R = 5
-        self.color = "red"
+        self.color = "#c00"
         self.image = None
 
         self.x, self.y = 0, 0
@@ -50,8 +50,8 @@ class SmallBody:
 
     def push(self, event):
         center = (self.x, self.y)
-        x, y = event.x, event.y
-        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R - 1:
+        x, y = event.x - event.widget.winfo_width() // 2, event.y - event.widget.winfo_height() // 2
+        if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R:
             return True
         else:
             return False

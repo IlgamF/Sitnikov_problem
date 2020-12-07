@@ -62,9 +62,8 @@ def close(event):
 def push(event):
     W.push(event)
     for i in range(len(Objects)):
-        print(event.x, Objects[i].x)
         if Objects[i].push(event):
-            W.l_panel.info = i
+            W.l_panel.info = Objects[i]
             break
     if W.process:
         W.l_panel.show_info(W)

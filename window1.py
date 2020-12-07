@@ -212,6 +212,6 @@ class LeftPanel:
         text_accel = 'Ускорение тела: ' + str(accel) + ' у.е \n'
 
         txt = text_name + text_mass + text_distance + text_velocity + text_accel
-        st = Label(w.space, text=txt, font="Arial 12", bg="#ccc", fg="blue", justify='left')
+        st = Label(w.space, text=txt, font="Arial 12", bg="#ccc", fg=self.info.color, justify='left')
         st.place(x=17, y=17)
         pass
