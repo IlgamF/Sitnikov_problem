@@ -101,7 +101,7 @@ class RoundButton:
 class Axis:
     def __init__(self, w):
         self.size = 0.8
-        self.x = [(-w.in_w / 2, 0), (w.in_w / 2 - 2, 0)]
+        self.x = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
         self.y = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         self.z = [(0, 0), (0, 0)]
         self.colors = ['white', 'black']
@@ -117,7 +117,7 @@ class Axis:
         pass
 
     def redraw(self, w):
-        x_pair = [(-w.in_w / 2, 0), (w.in_w / 2 - 2, 0)]
+        x_pair = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
         y_pair = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         zero = [(0, 0), (0, 0)]
         print(w.angles)
