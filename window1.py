@@ -26,14 +26,14 @@ def sum_of_squares(a, b, c):
 class RightPanel:
     def __init__(self, w):
         width, height = w.in_w, w.in_h
-        self.left_top = (width * 3/8, - height//2 + 15)
+        self.left_top = (width // 2 - 118, - height//2 + 15)
         self.right_bottom = (width // 2 - 15, height // 2 - 75)
-        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#ccc')
+        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
         pass
 
     def resize(self, w):
         width, height = w.space.winfo_width(), w.space.winfo_height()
-        self.left_top = (width // 2 - 115, - height//2 + 15)
+        self.left_top = (width // 2 - 118, - height//2 + 15)
         self.right_bottom = (width // 2 - 15, height // 2 - 75)
         w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
         pass
@@ -185,7 +185,7 @@ class LeftPanel:
         width, height = w.in_w, w.in_h
         self.left_top = (- width // 2 + 15, - height//2 + 15)
         self.right_bottom = (- width // 2 + 350, - height//2 + 125)
-        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#ccc')
+        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
         self.info = 0
         pass
 
@@ -212,6 +212,6 @@ class LeftPanel:
         text_accel = 'Ускорение тела: ' + str(accel) + ' у.е'
 
         txt = text_name + text_mass + text_distance + text_velocity + text_accel
-        st = Label(w.space, text=txt, font="Arial 12", bg="#ccc", fg=self.info.color, justify='left')
+        st = Label(w.space, text=txt, font="Arial 12", bg="#fff", fg=self.info.color, justify='left')
         st.place(x=17, y=17)
         pass
