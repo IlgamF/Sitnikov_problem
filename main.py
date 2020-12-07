@@ -8,6 +8,7 @@ Main programme file
 from objects import *
 from window import *
 from model import *
+from output import *
 
 Close = False
 Objects = []
@@ -42,6 +43,7 @@ def moving():
 
     if W.process:
         W.space.after(101 - dt, moving)
+        write_stats_data_to_file('output.txt', Objects[1])
     pass
 
 
