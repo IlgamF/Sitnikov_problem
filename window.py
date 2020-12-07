@@ -129,12 +129,12 @@ class Window:
             self.process = False
             draw_graph(self.o)
         if a == 3:
-            self.additional = InfoWindow('help.txt')
-            self.additional.file_reading('help.txt')
-            self.process = False
-        if a == 4:
             self.additional = InfoWindow('info.txt')
             self.additional.file_reading('info.txt')
+            self.process = False
+        if a == 4:
+            self.additional = InfoWindow('help.txt')
+            self.additional.file_reading('help.txt')
             self.process = False
         if a == 5:
             self.view = (self.view + 1) % len(views)
