@@ -56,6 +56,7 @@ def push(event):
     for i in range(len(Objects)):
         if Objects[i].push(event):
             W.l_panel.info = i
+            break
     if W.process:
         moving()
     pass
@@ -74,6 +75,10 @@ def main():
         update_object_position(W, Objects[i])
 
     create_body_image(W, Objects[2])  # image of body
+
+    if W.l_panel.info == 0:
+        W.l_panel.info = Objects[2]
+    W.l_panel.show_info(W)
 
     if W.process:
         moving()

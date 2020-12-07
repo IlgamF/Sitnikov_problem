@@ -11,7 +11,7 @@ import numpy as np
 class BigBody:
     """Класс, описывающий тело большей массы."""
     def __init__(self):
-        self.type = "bigbody"
+        self.type = "big body"
         self.m = 1000
         self.R = 10
         self.color = "red"
@@ -36,7 +36,7 @@ class BigBody:
 class SmallBody:
     """Класс, описывающий тело меньшей массы."""
     def __init__(self):
-        self.type = "smallbody"
+        self.type = "small body"
         self.m = 1
         self.R = 5
         self.color = "red"

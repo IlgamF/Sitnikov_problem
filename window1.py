@@ -19,6 +19,10 @@ def round_pair(a):
     return [round(a[0], 0), round(a[1], 0)]
 
 
+def sum_of_squares(a, b, c):
+    return (a**2 + b**2 + c**2)**0.5
+
+
 class RightPanel:
     def __init__(self, w):
         width, height = w.in_w, w.in_h
@@ -97,7 +101,7 @@ class RoundButton:
 class Axis:
     def __init__(self, w):
         self.size = 0.8
-        self.x = [(-w.in_w / 2, 2), (w.in_w / 2 - 2, 2)]
+        self.x = [(-w.in_w / 2, 0), (w.in_w / 2 - 2, 0)]
         self.y = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         self.z = [(0, 0), (0, 0)]
         self.colors = ['white', 'black']
@@ -113,7 +117,7 @@ class Axis:
         pass
 
     def redraw(self, w):
-        x_pair = [(-w.in_w / 2, 2), (w.in_w / 2 - 2, 2)]
+        x_pair = [(-w.in_w / 2, 0), (w.in_w / 2 - 2, 0)]
         y_pair = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         zero = [(0, 0), (0, 0)]
         print(w.angles)
@@ -182,7 +186,7 @@ class LeftPanel:
         self.left_top = (- width // 2 + 15, - height//2 + 15)
         self.right_bottom = (- width // 2 + 280, - height//2 + 210)
         self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#ccc')
-        self.info = 2
+        self.info = 0
         pass
 
     def resize(self, w):
@@ -190,4 +194,19 @@ class LeftPanel:
         self.left_top = (- width // 2 + 15, - height//2 + 15)
         self.right_bottom = (- width // 2 + 280, - height//2 + 210)
         w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
+        pass
+
+    def show_info(self, w):
+        # функция должна выводить информацию о координате и скорости тел
+        width, height = w.space.winfo_width(), w.space.winfo_height()
+        if self.info.type == "big body":
+            name = 'Массивное тело \n'
+        else:
+            name = 'Тело малой массы \n'
+        mass = str(self.info.m) + 'отн. ед. \n'
+        velocity = str(round(sum_of_squares(self.info.Va, self.info.Vb, self.info.Vc), 2)) + 'у.е \n'
+        accel = str(round(sum_of_squares(self.info.Fa, self.info.Fb, self.info.Fc) / self.info.m, 3)) + 'у.е \n'
+        txt = name + mass + velocity + accel
+        st = Label(w.space, text=txt, font="TimesNewRoman 12", bg="white", fg="blue")
+        st.place(x=- width // 2 + 30, y=- height//2 + 30)
         pass

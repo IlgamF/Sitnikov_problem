@@ -28,8 +28,8 @@ class Window:
     """
     def __init__(self, title, o):
         user32 = ctypes.windll.user32
-        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 8)
-        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
+        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 10.8)
+        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 8.1)
 
         self.root = Tk()  # create window
         self.root.geometry('%ix%i' % (self.in_w, self.in_h))
