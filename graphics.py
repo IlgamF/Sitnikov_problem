@@ -9,15 +9,13 @@ Module for drawing graphics
 from matplotlib import pyplot as pl
 
 
-
-
 def draw_graph(objects, output_filename):
 
     distance = []
     velocity = []
     with open(output_filename, 'r') as output_file:
         for line in output_file:
-            if line.split() == []:
+            if not line.split():
                 continue
             else:
                 distance.append(float(line.split()[0]))
