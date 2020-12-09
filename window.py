@@ -78,10 +78,7 @@ class Window:
         for i in range(len(self.buttons)):
             self.buttons[i].resize(self.space)
 
-        if self.axes_alive.count(False) > 0:
-            self.axes.resize_surface(self)
-        else:
-            self.axes.resize_general(self)
+        self.axes.resize(self)
 
         self.r_panel.resize(self)
         self.l_panel.resize(self)
