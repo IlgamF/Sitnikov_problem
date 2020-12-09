@@ -6,7 +6,7 @@ Visualization module. Describes main screen processes
 """
 
 import ctypes
-from window1 import *
+from items import *
 from graphics import *
 
 
