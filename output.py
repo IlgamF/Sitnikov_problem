@@ -15,6 +15,7 @@ def delete_last_stats(output_filename):
     with open(output_filename, 'w') as output_file:
         print('', file=output_file)
 
+
 def write_stats_data_to_file(output_filename, body):
     """ Функция сохраняет расстояния и скорости. Строки имеют следующий формат:
     <r>, <V> """

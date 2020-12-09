@@ -7,7 +7,7 @@ Visualization module. Describes main screen processes
 
 from tkinter import *
 import numpy as np
-from PIL import ImageTk, Image
+from PIL import ImageTk
 
 
 def point_towards(w, i):
@@ -115,8 +115,8 @@ class Axis:
         self.name_y = Label(w.space, text='y', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
         self.name_z = Label(w.space, text='z', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
 
-        self.name_x.place(x=(self.x[1][0] + 3 * w.in_w // 8), y=(self.x[1][1] + w.in_h // 2))
-        self.name_y.place(x=(self.y[0][0] + w.in_w // 2 + 10), y=(self.x[0][1] + 10))
+        self.name_x.place(x=(self.x[1][0] + 3 * w.in_w / 8), y=(self.x[1][1] + w.in_h / 2))
+        self.name_y.place(x=(self.y[0][0] + w.in_w / 2 + 10), y=20)
         pass
 
     def repaint(self, w):
@@ -128,41 +128,66 @@ class Axis:
         pass
 
     def redraw(self, w):
+        """
+        Function changes Axis positions when view changes
+        :param w:
+        :return:
+        """
         x_pair = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
+        x_name_pair = [(w.in_w / 2 + 3 * w.in_w // 8 - 2), (-2 + w.in_h // 2)]
         y_pair = [(0, -w.in_h / 2), (0, w.in_h / 2)]
+        y_name_pair = [(w.in_w // 2 + 10), 20]
         zero = [(0, 0), (0, 0)]
+        delta = 220
+        dy = 9
 
         if 0.05 < abs(w.angles[0][0]) < 0.95:
             self.x = point_towards(w, 0)
-            self.name_x.place(x=(self.x[0][0] + w.in_w / 2 + 100), y=(self.x[0][1]) + w.in_h / 2 - 150)
+            tg = w.angles[0][0] / w.angles[0][1]
+            self.name_x.place(x=(self.x[0][0] + w.in_w / 2 + delta * tg),
+                              y=(self.x[0][1]) + w.in_h / 2 - delta + dy)
         if 0.05 < abs(w.angles[1][0]) < 0.95:
             self.y = point_towards(w, 1)
-            self.name_y.place(x=(self.y[0][0] + w.in_w / 2 + 100), y=(self.y[0][1]) + w.in_h / 2 - 150)
+            tg = w.angles[1][0] / w.angles[1][1]
+            self.name_y.place(x=(self.y[0][0] + w.in_w / 2 + delta * tg),
+                              y=(self.y[0][1]) + w.in_h / 2 - delta + dy)
         if 0.05 < abs(w.angles[2][0]) < 0.95:
             self.z = point_towards(w, 2)
-            self.name_z.place(x=(self.z[0][0] + w.in_w / 2 + 100), y=(self.z[0][1]) + w.in_h / 2 - 150)
+            tg = w.angles[2][0] / w.angles[2][1]
+            self.name_z.place(x=(self.z[0][0] + w.in_w / 2 + delta * tg),
+                              y=(self.z[0][1]) + w.in_h / 2 - delta + dy)
 
+        name_hide = (-100, -100)
         if not w.axes_alive[0]:
             self.x = zero
+            self.name_x.place(x=name_hide[0], y=name_hide[1])
         elif not w.axes_alive[1]:
             self.y = zero
+            self.name_y.place(x=name_hide[0], y=name_hide[1])
         elif not w.axes_alive[2]:
             self.z = zero
+            self.name_z.place(x=name_hide[0], y=name_hide[1])
 
         if round_pair(w.angles[0]) == [-1, 0]:
             self.x = x_pair
+            self.name_x.place(x=x_name_pair[0], y=x_name_pair[1])
         elif round_pair(w.angles[0]) == [0, -1]:
             self.x = y_pair
+            self.name_x.place(x=y_name_pair[0], y=y_name_pair[1])
 
         if round_pair(w.angles[1]) == [-1, 0]:
             self.y = x_pair
+            self.name_y.place(x=x_name_pair[0], y=x_name_pair[1])
         elif round_pair(w.angles[1]) == [0, -1]:
             self.y = y_pair
+            self.name_y.place(x=y_name_pair[0], y=y_name_pair[1])
 
         if round_pair(w.angles[2]) == [-1, 0]:
             self.z = x_pair
+            self.name_z.place(x=x_name_pair[0], y=x_name_pair[1])
         elif round_pair(w.angles[2]) == [0, -1]:
             self.z = y_pair
+            self.name_z.place(x=y_name_pair[0], y=y_name_pair[1])
 
         self.re_cord(w)
         pass
