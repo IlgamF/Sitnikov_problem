@@ -130,91 +130,76 @@ class Axis:
     def redraw(self, w):
         """
         Function changes Axis positions when view changes
-        :param w:
+        :param w: Window
         :return:
         """
         x_pair = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
-        x_name_pair = [(w.in_w / 2 + 3 * w.in_w // 8 - 2), (-2 + w.in_h // 2)]
+        x_name_pair = [(w.in_w / 2 + 3 * w.in_w // 8 - 2), (w.in_h // 2 + 5)]
+
         y_pair = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         y_name_pair = [(w.in_w // 2 + 10), 20]
+
         zero = [(0, 0), (0, 0)]
-        delta = 220
-        dy = 9
-
-        if 0.05 < abs(w.angles[0][0]) < 0.95:
-            self.x = point_towards(w, 0)
-            tg = w.angles[0][0] / w.angles[0][1]
-            self.name_x.place(x=(self.x[0][0] + w.in_w / 2 + delta * tg),
-                              y=(self.x[0][1]) + w.in_h / 2 - delta + dy)
-        if 0.05 < abs(w.angles[1][0]) < 0.95:
-            self.y = point_towards(w, 1)
-            tg = w.angles[1][0] / w.angles[1][1]
-            self.name_y.place(x=(self.y[0][0] + w.in_w / 2 + delta * tg),
-                              y=(self.y[0][1]) + w.in_h / 2 - delta + dy)
-        if 0.05 < abs(w.angles[2][0]) < 0.95:
-            self.z = point_towards(w, 2)
-            tg = w.angles[2][0] / w.angles[2][1]
-            self.name_z.place(x=(self.z[0][0] + w.in_w / 2 + delta * tg),
-                              y=(self.z[0][1]) + w.in_h / 2 - delta + dy)
-
         name_hide = (-100, -100)
-        if not w.axes_alive[0]:
-            self.x = zero
-            self.name_x.place(x=name_hide[0], y=name_hide[1])
-        elif not w.axes_alive[1]:
-            self.y = zero
-            self.name_y.place(x=name_hide[0], y=name_hide[1])
-        elif not w.axes_alive[2]:
-            self.z = zero
-            self.name_z.place(x=name_hide[0], y=name_hide[1])
+        delta, dy = 220, 10  # special parameters for labels coordinates
 
-        if round_pair(w.angles[0]) == [-1, 0]:
+        axes = [self.x, self.y, self.z]
+        axis_names = [self.name_x, self.name_z, self.name_y]
+
+        for i in range(len(axes)):
+            if 0.05 < abs(w.angles[i][0]) < 0.95:
+                axes[i] = point_towards(w, i)
+                tg = w.angles[i][0] / w.angles[i][1]
+                axis_names[i].place(x=(axes[i][0][0] + w.in_w / 2 + delta * tg),
+                                    y=(axes[i][0][1]) + w.in_h / 2 - delta + dy)
+            if not w.axes_alive[i]:
+                axes[i] = zero
+                axis_names[i].place(x=name_hide[0], y=name_hide[1])
+
+            if round_pair(w.angles[i]) == [-1, 0]:
+                axes[i] = x_pair
+                axis_names[i].place(x=x_name_pair[0], y=x_name_pair[1])
+            elif round_pair(w.angles[i]) == [0, -1]:
+                axes[i] = y_pair
+                axis_names[i].place(x=y_name_pair[0], y=y_name_pair[1])
+
+        self.x, self.y, self.z = axes
+        self.re_cord(w)
+        pass
+
+    def resize_surface(self, w):
+        width, height = w.space.winfo_width(), w.space.winfo_height()
+        x_pair, y_pair = [(-width / 2, -2), (width / 2, -2)], [(0, -height / 2), (0, height / 2)]
+        x_name_pair = [(width / 2 + 3 * width // 8 - 2), (height // 2 + 5)]
+        y_name_pair = [(width // 2 + 10), 20]
+        if w.axes_alive[0]:
             self.x = x_pair
             self.name_x.place(x=x_name_pair[0], y=x_name_pair[1])
-        elif round_pair(w.angles[0]) == [0, -1]:
-            self.x = y_pair
-            self.name_x.place(x=y_name_pair[0], y=y_name_pair[1])
-
-        if round_pair(w.angles[1]) == [-1, 0]:
+            if w.axes_alive[1]:
+                self.y = y_pair
+                self.name_y.place(x=y_name_pair[0], y=y_name_pair[1])
+            else:
+                self.z = y_pair
+                self.name_z.place(x=y_name_pair[0], y=y_name_pair[1])
+        else:
             self.y = x_pair
             self.name_y.place(x=x_name_pair[0], y=x_name_pair[1])
-        elif round_pair(w.angles[1]) == [0, -1]:
-            self.y = y_pair
-            self.name_y.place(x=y_name_pair[0], y=y_name_pair[1])
-
-        if round_pair(w.angles[2]) == [-1, 0]:
-            self.z = x_pair
-            self.name_z.place(x=x_name_pair[0], y=x_name_pair[1])
-        elif round_pair(w.angles[2]) == [0, -1]:
             self.z = y_pair
             self.name_z.place(x=y_name_pair[0], y=y_name_pair[1])
 
         self.re_cord(w)
         pass
 
-    def resize_surface(self, w):
-        width, height = w.space.winfo_width(), w.space.winfo_height()
-        if w.axes_alive[0]:
-            self.x = [(-width / 2, 0), (width / 2, 0)]
-            if w.axes_alive[1]:
-                self.y = [(0, -height / 2), (0, height / 2)]
-            else:
-                self.z = [(0, -height / 2), (0, height / 2)]
-        else:
-            self.y = [(-width / 2, 0), (width / 2, 0)]
-            self.z = [(0, -height / 2), (0, height / 2)]
-
-        self.re_cord(w)
-        # FIXME сделать переорганизацию подписей к осям
-        pass
-
     def resize_general(self, w):
         pass
 
     def re_cord(self, w):
-        w.space.coords(self.id_x, self.x[0][0], self.x[0][1], self.x[1][0], self.x[1][1])
-        w.space.coords(self.id_y, self.y[0][0], self.y[0][1], self.y[1][0], self.y[1][1])
-        w.space.coords(self.id_z, self.z[0][0], self.z[0][1], self.z[1][0], self.z[1][1])
+        id_list = [self.id_x, self.id_y, self.id_z]
+        coordinates_list = [self.x, self.y, self.z]
+        for i in range(len(id_list)):
+            w.space.coords(id_list[i],
+                           coordinates_list[i][0][0], coordinates_list[i][0][1],
+                           coordinates_list[i][1][0], coordinates_list[i][1][1])
         pass
 
 
