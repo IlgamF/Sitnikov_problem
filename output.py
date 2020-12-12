@@ -17,7 +17,6 @@ def cos_theorem(vec1, vec2):
     scalar = 0
     for i in range(3):
         scalar += vec1[i] * vec2[i]
-    print(scalar)
     if scalar < 0:
         return -1
     else:
@@ -35,8 +34,8 @@ def write_stats_data_to_file(output_filename, body):
     <r>, <V> """
   
     file_list = []
-    r = py(body.r)
-    vel = py(body.V)
+    r = py(body.r) * cos_theorem(body.r, body.vec_0)
+    vel = py(body.V) * cos_theorem(body.V, body.vel_0)
     r = '{} '.format(r)
     vel = '{} '.format(vel)
     line = r + vel

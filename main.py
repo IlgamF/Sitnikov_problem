@@ -41,7 +41,7 @@ def get_objects():
     b.V = (0, 0, 2)
     # b.Vc = 2
     b.vec_0 = (0, 0, 1)
-    b.vel_0 = (0, 0, 2)
+    b.vel_0 = b.V
     
     return [b1, b2, b]
 
