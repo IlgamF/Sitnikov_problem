@@ -17,12 +17,15 @@ class BigBody:
         self.color = "red"
         self.image = None
         self.path = []
-        
+
         self.x, self.y = 0, 0
 
-        self.a, self.b, self.c = 0, 0, 0
-        self.Va, self.Vb, self.Vc = 0, 0, 0
-        self.Fa, self.Fb, self.Fc = 0, 0, 0
+        self.r = np.array([0, 0, 0])
+        self.V = np.array([0, 0, 0])
+        self.F = np.array([0, 0, 0])
+
+        self.vel_0 = (0, 0, 0)
+        self.vec_0 = (0, 0, 0)
 
     def push(self, event):
         center = (self.x, self.y)
@@ -44,9 +47,12 @@ class SmallBody:
 
         self.x, self.y = 0, 0
 
-        self.a, self.b, self.c = 0, 0, 0
-        self.Va, self.Vb, self.Vc = 0, 0, 0
-        self.Fa, self.Fb, self.Fc = 0, 0, 0
+        self.r = np.array([0, 0, 0])
+        self.V = np.array([0, 0, 0])
+        self.F = np.array([0, 0, 0])
+
+        self.vel_0 = (0, 0, 0)
+        self.vec_0 = (0, 0, 0)
 
     def push(self, event):
         center = (self.x, self.y)

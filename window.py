@@ -200,12 +200,13 @@ def reorganize_coordinates(w, body):
     axes, angles = w.axes_alive, w.angles
     phi_x, phi_y, phi_z = angles[0], angles[1], angles[2]
     da, db, dc = (0, 0), (0, 0), (0, 0)
+
     if axes[0]:  # if x exists
-        da = (-body.a * phi_x[0], body.a * phi_x[1])
+        da = (-body.r[0] * phi_x[0], body.r[0] * phi_x[1])
     if axes[1]:
-        db = (-body.b * phi_y[0], body.b * phi_y[1])
+        db = (-body.r[1] * phi_y[0], body.r[1] * phi_y[1])
     if axes[2]:
-        dc = (-body.c * phi_z[0], body.c * phi_z[1])
+        dc = (-body.r[2] * phi_z[0], body.r[2] * phi_z[1])
     body.x, body.y = da[0] + db[0] + dc[0], da[1] + db[1] + dc[1]
     pass
 

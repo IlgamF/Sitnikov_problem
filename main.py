@@ -19,17 +19,29 @@ W = Window('Sitnikov problem', Objects)
 
 def get_objects():
     b1 = BigBody()
-    b1.a = 150
-    b1.Vb = 1.5
+    '''b1.a = 150
+    b1.Vb = 1.5'''
+    b1.r = (150, 0, 0)
+    b1.V = (0, 1.5, 0)
     b1.color = "blue"
+    b1.vec_0 = b1.r
+    b1.vel_0 = b1.V
     
     b2 = BigBody()
-    b2.a = -150
-    b2.Vb = -1.5
+    b2.r = (-150, 0, 0)
+    b2.V = (0, -1.5, 0)
+    '''b2.a = -150
+    b2.Vb = -1.5'''
     b2.color = "green"
+    b2.vec_0 = b2.r
+    b2.vel_0 = b2.V
     
     b = SmallBody()
-    b.Vc = 2
+    b.r = (0, 0, 0)
+    b.V = (0, 0, 2)
+    # b.Vc = 2
+    b.vec_0 = (0, 0, 1)
+    b.vel_0 = (0, 0, 2)
     
     return [b1, b2, b]
 
@@ -42,8 +54,10 @@ def moving():
     if Time_counter % 50 == 0:
         Time_counter = 0
         W.l_panel.show_info(W)
+
+    '''if Time_counter % 5 == 0:
         write_stats_data_to_file('output1.txt', Objects[1])
-        write_stats_data_to_file('output2.txt', Objects[2])
+        write_stats_data_to_file('output2.txt', Objects[2])'''
 
     for i, body in enumerate(Objects):
         update_object_position(W, body)

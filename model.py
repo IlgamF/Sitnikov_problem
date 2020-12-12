@@ -14,17 +14,9 @@ gravitational_constant = 1
 
 
 def body_move(body, dt):
-    accel_a = body.Fa / body.m
-    body.Va += accel_a*dt
-    body.a += body.Va * dt + accel_a*dt**2/2
-
-    accel_b = body.Fb / body.m
-    body.Vb += accel_b*dt
-    body.b += body.Vb * dt + accel_b*dt**2/2
-
-    accel_c = body.Fc / body.m
-    body.Vc += accel_c*dt
-    body.c += body.Vc * dt + accel_c*dt**2/2
+    accel = body.F / body.m
+    body.V = body.V + accel * dt
+    body.r += body.V * dt + accel * dt ** 2 / 2
 
 
 def sum_of_squares(v):
@@ -34,19 +26,19 @@ def sum_of_squares(v):
 
 
 def body_force(body, objects):
+    body.F = (0, 0, 0)
     body.Fa = body.Fb = body.Fc = 0
     for obj in objects:
         if body == obj:
             continue
         else:
-            vec = np.array([obj.a - body.a, obj.b - body.b, obj.c - body.c])
+            vec = np.array(obj.r) - np.array(body.r)
+            # vec = np.array([obj.a - body.a, obj.b - body.b, obj.c - body.c])
             r = np.sqrt(sum_of_squares(vec))
             unit_vec = vec / r
 
             df = gravitational_constant * body.m * obj.m / r ** 2
-            body.Fa += df * unit_vec[0]
-            body.Fb += df * unit_vec[1]
-            body.Fc += df * unit_vec[2]
+            body.F = np.array(body.F) + df * unit_vec
         pass
 
 

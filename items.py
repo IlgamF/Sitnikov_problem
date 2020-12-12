@@ -225,9 +225,11 @@ class LeftPanel:
             text_name = 'Массивное тело \n'
         else:
             text_name = 'Тело малой массы \n'
-        dist = round(sum_of_squares(self.info.a, self.info.b, self.info.c), 2)
-        vel = round(sum_of_squares(self.info.Va, self.info.Vb, self.info.Vc), 2)
-        accel = round(sum_of_squares(self.info.Fa, self.info.Fb, self.info.Fc) / self.info.m, 3)
+
+        dist = round(sum_of_squares(self.info.r[0], self.info.r[1], self.info.r[2]), 2)
+        vel = round(sum_of_squares(self.info.V[0], self.info.V[1], self.info.V[2]), 2)
+        accel = round(sum_of_squares(self.info.F[0], self.info.F[1], self.info.F[2]) / self.info.m, 3)
+
         text_mass = 'Масса тела: ' + str(self.info.m) + ' отн. ед. \n'
         text_distance = 'Расстояние от центра системы: ' + str(dist) + ' у.е. \n'
         text_velocity = 'Скорость тела: ' + str(vel) + ' у.е \n'
