@@ -42,7 +42,8 @@ def moving():
     if Time_counter % 50 == 0:
         Time_counter = 0
         W.l_panel.show_info(W)
-        write_stats_data_to_file('output.txt', Objects[1])
+        write_stats_data_to_file('output1.txt', Objects[1])
+        write_stats_data_to_file('output2.txt', Objects[2])
 
     for i, body in enumerate(Objects):
         update_object_position(W, body)
@@ -79,7 +80,8 @@ def main():
 
     Objects = get_objects()
     W.o = Objects
-    delete_last_stats('output.txt')
+    delete_last_stats('output1.txt')
+    delete_last_stats('output2.txt')
     for i in (0, 1):  # images of bodies b1 and b2
         create_body_image(W, Objects[i])
         update_object_position(W, Objects[i])
