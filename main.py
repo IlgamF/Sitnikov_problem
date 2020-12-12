@@ -39,7 +39,7 @@ def moving():
     dt = 100
     Time_counter += 1
     recalculate_objects_positions(Objects, dt/200)
-    if Time_counter % 40 == 0:
+    if Time_counter % 50 == 0:
         Time_counter = 0
         W.l_panel.show_info(W)
         write_stats_data_to_file('output.txt', Objects[1])
@@ -55,6 +55,7 @@ def moving():
 
 def close(event):
     global Close
+    W.process = False
     Close = True
     pass
 
@@ -88,13 +89,13 @@ def main():
     if W.l_panel.info == 0:
         W.l_panel.info = Objects[2]
 
-    if W.process:
-        moving()
-
     W.space.bind("<Configure>", W.resize)
     W.root.bind("<space>", W.repaint)
     W.space.bind("<Button-1>", push)
     W.root.bind("<Destroy>", close)
+
+    if W.process:
+        moving()
 
     if not Close:
         W.root.mainloop()

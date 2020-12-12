@@ -29,22 +29,6 @@ def sum_of_squares(a, b, c):
     return (a**2 + b**2 + c**2)**0.5
 
 
-class RightPanel:
-    def __init__(self, w):
-        width, height = w.in_w, w.in_h
-        self.left_top = (width // 2 - 118, - height//2 + 15)
-        self.right_bottom = (width // 2 - 15, height // 2 - 75)
-        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
-        pass
-
-    def resize(self, w):
-        width, height = w.space.winfo_width(), w.space.winfo_height()
-        self.left_top = (width // 2 - 118, - height//2 + 15)
-        self.right_bottom = (width // 2 - 15, height // 2 - 75)
-        w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
-        pass
-
-
 class RoundButton:
     def __init__(self, canvas, width, height, i):
         self.width, self.height = width, height
@@ -106,7 +90,6 @@ class RoundButton:
 
 class Axis:
     def __init__(self, w):
-        self.size = 0.8
         self.x = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
         self.y = [(0, -w.in_h / 2), (0, w.in_h / 2)]
         self.z = [(0, 0), (0, 0)]
@@ -117,7 +100,7 @@ class Axis:
         self.id_y = w.space.create_line(self.y[0], self.y[1], fill=self.colors[w.light])
         self.id_z = w.space.create_line(self.z[0], self.z[1], fill=self.colors[w.light])
 
-        self.name_x = Label(w.space, text='x', font="Arial 15", bg=self.colors[w.light-1], fg=self.colors[w.light])
+        self.name_x = Label(w.space, text='x', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
         self.name_y = Label(w.space, text='y', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
         self.name_z = Label(w.space, text='z', font="Arial 15", bg=self.colors[w.light - 1], fg=self.colors[w.light])
 
@@ -217,9 +200,6 @@ class Axis:
             w.space.coords(id_list[i],
                            coordinates_list[i][0][0], coordinates_list[i][0][1],
                            coordinates_list[i][1][0], coordinates_list[i][1][1])
-        '''w.space.coords(self.id_x, self.x[0][0], self.x[0][1], self.x[1][0], self.x[1][1])
-        w.space.coords(self.id_y, self.y[0][0], self.y[0][1], self.y[1][0], self.y[1][1])
-        w.space.coords(self.id_z, self.z[0][0], self.z[0][1], self.z[1][0], self.z[1][1])'''
         pass
 
 
@@ -227,7 +207,7 @@ class LeftPanel:
     def __init__(self, w):
         width, height = w.in_w, w.in_h
         self.left_top = (- width // 2 + 15, - height//2 + 15)
-        self.right_bottom = (- width // 2 + 350, - height//2 + 125)
+        self.right_bottom = (- width // 2 + 400, - height//2 + 125)
         self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
         self.info = 0
         pass
@@ -241,7 +221,6 @@ class LeftPanel:
 
     def show_info(self, w):
         # функция должна выводить информацию о координате и скорости тел
-        width, height = w.space.winfo_width(), w.space.winfo_height()
         if self.info.type == "big body":
             text_name = 'Массивное тело \n'
         else:
@@ -257,4 +236,20 @@ class LeftPanel:
         txt = text_name + text_mass + text_distance + text_velocity + text_accel
         st = Label(w.space, text=txt, font="Arial 12", bg="#fff", fg=self.info.color, justify='left')
         st.place(x=17, y=17)
+        pass
+
+
+class RightPanel:
+    def __init__(self, w):
+        width, height = w.in_w, w.in_h
+        self.left_top = (width // 2 - 118, - height//2 + 15)
+        self.right_bottom = (width // 2 - 15, height // 2 - 75)
+        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
+        pass
+
+    def resize(self, w):
+        width, height = w.space.winfo_width(), w.space.winfo_height()
+        self.left_top = (width // 2 - 118, - height//2 + 15)
+        self.right_bottom = (width // 2 - 15, height // 2 - 75)
+        w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
         pass
