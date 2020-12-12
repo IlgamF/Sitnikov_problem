@@ -37,7 +37,7 @@ class Window:
         self.root.minsize()
 
         self.light = 0  # defines color of canvas (black or white)
-        self.colours = ('#161a1e', '#dcecf5')
+        self.colours = ('#262a2e', '#dcecf5')
 
         self.dt = 0.5
 
@@ -88,7 +88,7 @@ class Window:
         self.in_w, self.in_h = w, h
         pass
 
-    def repaint(self, event):
+    def repaint(self):
         self.light = abs(self.light - 1)
 
         self.space.configure(bg=self.colours[self.light])

@@ -16,26 +16,29 @@ Objects = []
 Time_counter = 0
 P = Point()
 W = Window('Sitnikov problem', Objects)
+initial = [[(100, 0, 0), (0, 2, 0)],
+           [(-100, 0, 0), (0, -2, 0)],
+           [(0, 0, 0), (0, 0, 2)]]
 
 
 def get_objects():
     b1 = BigBody()
-    b1.r = (150, 0, 0)
-    b1.V = (0, 1.5, 0)
+    b1.r = initial[0][0]
+    b1.V = initial[0][1]
     b1.color = "blue"
     b1.vec_0 = b1.r
     b1.vel_0 = b1.V
     
     b2 = BigBody()
-    b2.r = (-150, 0, 0)
-    b2.V = (0, -1.5, 0)
+    b2.r = initial[1][0]
+    b2.V = initial[1][1]
     b2.color = "green"
     b2.vec_0 = b2.r
     b2.vel_0 = b2.V
     
     b = SmallBody()
-    b.r = (0, 0, 0)
-    b.V = (0, 0, 2)
+    b.r = initial[2][0]
+    b.V = initial[2][1]
     b.vec_0 = (0, 0, 1)
     b.vel_0 = b.V
     
@@ -47,12 +50,20 @@ def moving():
     Time_counter += 1
     recalculate_objects_positions(Objects, W.dt/2)
     if Time_counter % round((50 * sqrt(W.dt))) == 0:
-        data = W.r_panel.data
-        W.dt = data[0]
-        for i in range(len(Objects)):
-            Objects[i].m = data[i+1]
         Time_counter = 0
         W.l_panel.show_info(W)
+
+    data = W.r_panel.data
+    W.dt = data[0]
+    for i in range(len(Objects)):
+        Objects[i].m = data[i + 1]
+
+    if W.r_panel.renew_parameter:
+        W.r_panel.renew_parameter = False
+        for i in range(len(Objects)):
+            Objects[i].r = initial[i][0]
+            Objects[i].V = initial[i][1]
+            delete_last_stats('output1.txt'), delete_last_stats('output2.txt')
 
     if Time_counter % round((5 * sqrt(W.dt))) == 0:
         write_stats_data_to_file('output1.txt', Objects[1])
@@ -111,7 +122,6 @@ def main():
     W.l_panel.show_info(W)
 
     W.space.bind("<Configure>", W.resize)
-    W.root.bind("<space>", W.repaint)
     W.space.bind("<Button-1>", push)
     W.root.bind("<Destroy>", close)
 

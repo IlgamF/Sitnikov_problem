@@ -133,7 +133,7 @@ class Axis:
         delta, dy = 220, 10  # special parameters for labels coordinates
 
         axes = [self.x, self.y, self.z]
-        axis_names = [self.name_x, self.name_z, self.name_y]
+        axis_names = [self.name_x, self.name_y, self.name_z]
 
         for i in range(len(axes)):
             if 0.05 < abs(w.angles[i][0]) < 0.95:
@@ -208,7 +208,7 @@ class LeftPanel:
         width, height = w.in_w, w.in_h
         self.left_top = (- width // 2 + 15, - height//2 + 15)
         self.right_bottom = (- width // 2 + 400, - height//2 + 125)
-        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
+        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff', width=1)
         self.info = 0
         pass
 
@@ -243,48 +243,59 @@ class LeftPanel:
 
 class RightPanel:
     def __init__(self, w):
+        self.window = w
         self.width, self.height = w.in_w, w.in_h
         self.point = (self.width - 118, 20)
-        self.id = Frame(w.space, width=100, height=w.in_h - 100, bg='#eee')
+        self.id = Frame(w.space, width=100, height=w.in_h - 100, bg='#eee',
+                        highlightbackground="black", highlightthickness=1)
         self.id.place(x=self.point[0], y=self.point[1])
         self.data = [1.0, 1000, 1000, 1.0]
 
+        self.renew_parameter = False
+
         st = Label(self.id, text='Промежуток\nвремени\n(отн. исх.)',
                    font="Arial 12", bg="#eee", fg='#000', justify='center')
-        st.place(x=2, y=10)
+        st.pack(side=TOP, pady=5)
         self.time = StringVar()
         self.time_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.time)
-        self.time_panel.place(x=15, y=80)
+        self.time_panel.pack(side=TOP, pady=5)
         self.time_panel.insert(0, str(self.data[0]))
         self.time_button = Button(self.id, text='Применить', command=self.get_time)
-        self.time_button.place(x=12, y=110)
+        self.time_button.pack(side=TOP, pady=5)
 
         st = Label(self.id, text='Масса M1', font="Arial 12", bg="#eee", fg='#000', justify='center')
-        st.place(x=10, y=150)
+        st.pack(side=TOP, pady=5)
         self.m1 = StringVar()
         self.M1_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.m1)
-        self.M1_panel.place(x=15, y=180)
+        self.M1_panel.pack(side=TOP, pady=5)
         self.M1_panel.insert(0, str(self.data[1]))
-        self.M1_button = Button(self.id, text='Применить', command=self.get_m1)
-        self.M1_button.place(x=12, y=210)
+        self.M1_button = Button(self.id, text='Применить', command=self.get_m1, bg='blue', fg='white')
+        self.M1_button.pack(side=TOP, pady=5)
 
         st = Label(self.id, text='Масса M2', font="Arial 12", bg="#eee", fg='#000', justify='center')
-        st.place(x=10, y=240)
+        st.pack(side=TOP, pady=5)
         self.m2 = StringVar()
         self.M2_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.m2)
-        self.M2_panel.place(x=15, y=270)
+        self.M2_panel.pack(side=TOP, pady=5)
         self.M2_panel.insert(0, str(self.data[2]))
-        self.M2_button = Button(self.id, text='Применить', command=self.get_m2)
-        self.M2_button.place(x=12, y=300)
+        self.M2_button = Button(self.id, text='Применить', command=self.get_m2, bg='green')
+        self.M2_button.pack(side=TOP, pady=5)
 
         st = Label(self.id, text='Масса m', font="Arial 12", bg="#eee", fg='#000', justify='center')
-        st.place(x=10, y=330)
+        st.pack(side=TOP, pady=5)
         self.m = StringVar()
         self.m_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.m)
-        self.m_panel.place(x=15, y=360)
+        self.m_panel.pack(side=TOP, pady=5)
         self.m_panel.insert(0, str(self.data[3]))
-        self.m_button = Button(self.id, text='Применить', command=self.get_m)
-        self.m_button.place(x=12, y=390)
+        self.m_button = Button(self.id, text='Применить', command=self.get_m, bg='red')
+        self.m_button.pack(side=TOP, pady=5)
+
+        self.light = False
+        self.light_button = Button(self.id, text='Светлый\nрежим', command=self.change_light, bg='#fff')
+        self.light_button.pack(side=TOP, pady=5)
+
+        self.renew_button = Button(self.id, text='Обновить', command=self.renew, bg='#000', fg='#fff')
+        self.renew_button.pack(side=TOP, pady=5)
         pass
 
     def resize(self, w):
@@ -307,4 +318,16 @@ class RightPanel:
 
     def get_m(self):
         self.data[3] = float(self.m.get())
+        pass
+
+    def change_light(self):
+        self.light = not self.light
+        self.window.repaint()
+        if self.light:
+            self.light_button['text'] = 'Тёмный\nрежим'
+        else:
+            self.light_button['text'] = 'Светлый\nрежим'
+
+    def renew(self):
+        self.renew_parameter = True
         pass
