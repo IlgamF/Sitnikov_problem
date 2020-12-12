@@ -6,8 +6,11 @@ Module for saving data to special files
 """
 
 
-def py(a, b, c):
-    return (a*a + b*b + c*c)**0.5
+def py(vec):
+    square = 0
+    for i in range(len(vec)):
+        square += vec[i]**2
+    return square**0.5
 
 
 def cos_theorem(vec1, vec2):
@@ -32,8 +35,8 @@ def write_stats_data_to_file(output_filename, body):
     <r>, <V> """
   
     file_list = []
-    r = py(body.a, body.b, body.c) * cos_theorem((body.a, body.b, body.c), body.vec_0)
-    vel = py(body.Va, body.Vb, body.Vc) * cos_theorem((body.Va, body.Vb, body.Vc), body.vel_0)
+    r = py(body.r)
+    vel = py(body.V)
     r = '{} '.format(r)
     vel = '{} '.format(vel)
     line = r + vel

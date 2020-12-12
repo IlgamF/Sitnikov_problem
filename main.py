@@ -55,9 +55,9 @@ def moving():
         Time_counter = 0
         W.l_panel.show_info(W)
 
-    '''if Time_counter % 5 == 0:
+    if Time_counter % 5 == 0:
         write_stats_data_to_file('output1.txt', Objects[1])
-        write_stats_data_to_file('output2.txt', Objects[2])'''
+        write_stats_data_to_file('output2.txt', Objects[2])
 
     for i, body in enumerate(Objects):
         update_object_position(W, body)
