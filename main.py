@@ -9,6 +9,7 @@ from objects import *
 from window import *
 from model import *
 from output import *
+from numpy import *
 
 Close = False
 Objects = []
@@ -44,12 +45,16 @@ def get_objects():
 def moving():
     global Time_counter
     Time_counter += 1
-    recalculate_objects_positions(Objects, W.dt/200)
-    if Time_counter % 50 == 0:
+    recalculate_objects_positions(Objects, W.dt/2)
+    if Time_counter % round((50 * sqrt(W.dt))) == 0:
+        data = W.r_panel.data
+        W.dt = data[0]
+        for i in range(len(Objects)):
+            Objects[i].m = data[i+1]
         Time_counter = 0
         W.l_panel.show_info(W)
 
-    if Time_counter % 5 == 0:
+    if Time_counter % round((5 * sqrt(W.dt))) == 0:
         write_stats_data_to_file('output1.txt', Objects[1])
         write_stats_data_to_file('output2.txt', Objects[2])
 
@@ -58,7 +63,7 @@ def moving():
         W.space.update()
 
     if W.process:
-        W.space.after(101 - W.dt, moving)
+        W.space.after(1, moving)
     pass
 
 
@@ -76,13 +81,17 @@ def push(event):
             W.l_panel.info = Objects[i]
             break
     if W.process:
-        W.l_panel.show_info(W)
         moving()
+    W.l_panel.show_info(W)
+    W.space.update()
     pass
 
 
 def main():
     global Objects
+
+    # obj = ImageTk.PhotoImage(file='slowfast.png')
+    # W.space.create_image(100, 100, anchor=NW, image=obj)
 
     print('Modelling started!')
 
@@ -98,6 +107,8 @@ def main():
 
     if W.l_panel.info == 0:
         W.l_panel.info = Objects[2]
+
+    W.l_panel.show_info(W)
 
     W.space.bind("<Configure>", W.resize)
     W.root.bind("<space>", W.repaint)

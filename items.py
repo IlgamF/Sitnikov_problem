@@ -243,28 +243,68 @@ class LeftPanel:
 
 class RightPanel:
     def __init__(self, w):
-        width, height = w.in_w, w.in_h
-        self.width = w.in_w
-        self.left_top = (width // 2 - 118, - height//2 + 15)
-        self.right_bottom = (width // 2 - 15, height // 2 - 75)
-        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
-        self.names = ['Промежуток\n времени', 'Масса M1', 'Масса М2', 'Масса m']
-        self.states = []
-        self.put_names(w)
+        self.width, self.height = w.in_w, w.in_h
+        self.point = (self.width - 118, 20)
+        self.id = Frame(w.space, width=100, height=w.in_h - 100, bg='#eee')
+        self.id.place(x=self.point[0], y=self.point[1])
+        self.data = [1.0, 1000, 1000, 1.0]
+
+        st = Label(self.id, text='Промежуток\nвремени\n(отн. исх.)',
+                   font="Arial 12", bg="#eee", fg='#000', justify='center')
+        st.place(x=2, y=10)
+        self.time = StringVar()
+        self.time_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.time)
+        self.time_panel.place(x=15, y=80)
+        self.time_panel.insert(0, str(self.data[0]))
+        self.time_button = Button(self.id, text='Применить', command=self.get_time)
+        self.time_button.place(x=12, y=110)
+
+        st = Label(self.id, text='Масса M1', font="Arial 12", bg="#eee", fg='#000', justify='center')
+        st.place(x=10, y=150)
+        self.m1 = StringVar()
+        self.M1_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.m1)
+        self.M1_panel.place(x=15, y=180)
+        self.M1_panel.insert(0, str(self.data[1]))
+        self.M1_button = Button(self.id, text='Применить', command=self.get_m1)
+        self.M1_button.place(x=12, y=210)
+
+        st = Label(self.id, text='Масса M2', font="Arial 12", bg="#eee", fg='#000', justify='center')
+        st.place(x=10, y=240)
+        self.m2 = StringVar()
+        self.M2_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.m2)
+        self.M2_panel.place(x=15, y=270)
+        self.M2_panel.insert(0, str(self.data[2]))
+        self.M2_button = Button(self.id, text='Применить', command=self.get_m2)
+        self.M2_button.place(x=12, y=300)
+
+        st = Label(self.id, text='Масса m', font="Arial 12", bg="#eee", fg='#000', justify='center')
+        st.place(x=10, y=330)
+        self.m = StringVar()
+        self.m_panel = Entry(self.id, width=7, font="Arial 12", justify='center', textvariable=self.m)
+        self.m_panel.place(x=15, y=360)
+        self.m_panel.insert(0, str(self.data[3]))
+        self.m_button = Button(self.id, text='Применить', command=self.get_m)
+        self.m_button.place(x=12, y=390)
         pass
 
     def resize(self, w):
-        width, height = w.space.winfo_width(), w.space.winfo_height()
-        self.left_top = (width // 2 - 118, - height//2 + 15)
-        self.right_bottom = (width // 2 - 15, height // 2 - 75)
-        w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
-        for i, state in enumerate(self.states):
-            state.place(x=width - 115, y=(20 + 100 * i))
+        self.width, self.height = w.space.winfo_width(), w.space.winfo_height()
+        self.point = (self.width - 118, 20)
+        self.id.place(x=self.point[0], y=self.point[1])
         pass
 
-    def put_names(self, w):
-        for i, name in enumerate(self.names):
-            st = Label(w.space, text=name, font="Arial 12", bg="#fff", fg='#000', justify='left')
-            self.states.append(st)
-            st.place(x=self.width - 116, y=(20 + 100 * i))
+    def get_time(self):
+        self.data[0] = float(self.time.get())
+        pass
+
+    def get_m1(self):
+        self.data[1] = int(self.m1.get())
+        pass
+
+    def get_m2(self):
+        self.data[2] = int(self.m2.get())
+        pass
+
+    def get_m(self):
+        self.data[3] = float(self.m.get())
         pass

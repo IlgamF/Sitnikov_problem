@@ -39,7 +39,7 @@ class Window:
         self.light = 0  # defines color of canvas (black or white)
         self.colours = ('#161a1e', '#dcecf5')
 
-        self.dt = 100
+        self.dt = 0.5
 
         self.space = Canvas(self.root, bg=self.colours[self.light])
         self.space.pack(side=TOP, fill="both", expand=True)
@@ -58,8 +58,8 @@ class Window:
 
         self.buttons = self.init_buttons()
 
-        self.r_panel = RightPanel(self)
         self.l_panel = LeftPanel(self)
+        self.r_panel = RightPanel(self)
 
         self.additional = 0  # defines new windows
         self.o = o
