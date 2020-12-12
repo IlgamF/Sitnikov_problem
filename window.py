@@ -121,18 +121,18 @@ class Window:
         for i in self.buttons:
             a += i.push(event)
         if a == 1:
-            self.additional = InfoWindow('teor.txt')
+            self.additional = InfoWindow('Теоретическое описание', 'teor.txt')
             self.additional.file_reading('teor.txt')
             self.process = False
         if a == 2:
             self.process = False
             draw_graph(self.o, ('output1.txt', 'output2.txt'))
         if a == 3:
-            self.additional = InfoWindow('info.txt')
+            self.additional = InfoWindow('Информация о программе', 'info.txt')
             self.additional.file_reading('info.txt')
             self.process = False
         if a == 4:
-            self.additional = InfoWindow('help.txt')
+            self.additional = InfoWindow('Помощь', 'help.txt')
             self.additional.file_reading('help.txt')
             self.process = False
         if a == 5:
@@ -152,7 +152,7 @@ class InfoWindow:
     self.space - canvas
     self.color - canvas color
     """
-    def __init__(self, filename):
+    def __init__(self, title, filename):
         user32 = ctypes.windll.user32
         self.in_w = round(user32.GetSystemMetrics(0) / 16 * 6)
         self.in_h = round(user32.GetSystemMetrics(1) / 9 * 4.5)
@@ -161,7 +161,7 @@ class InfoWindow:
 
         self.root = Tk()  # create window
         self.root.geometry('%ix%i' % (self.in_w, self.in_h))
-        self.root.title(filename)  # window top-left title
+        self.root.title(title)  # window top-left title
         self.root.minsize()
         
         self.space = Canvas(self.root, bg='white')
