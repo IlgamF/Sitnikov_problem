@@ -41,6 +41,8 @@ class Window:
 
         self.dt = 0.5
 
+        self.initial = [[(100, 0, 0), (0, 2, 0)], [(-100, 0, 0), (0, -2, 0)], [(0, 0, 0), (0, 0, 2)]]
+
         self.space = Canvas(self.root, bg=self.colours[self.light])
         self.space.pack(side=TOP, fill="both", expand=True)
         self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,

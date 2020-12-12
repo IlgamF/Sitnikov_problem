@@ -16,29 +16,26 @@ Objects = []
 Time_counter = 0
 P = Point()
 W = Window('Sitnikov problem', Objects)
-initial = [[(100, 0, 0), (0, 2, 0)],
-           [(-100, 0, 0), (0, -2, 0)],
-           [(0, 0, 0), (0, 0, 2)]]
 
 
 def get_objects():
     b1 = BigBody()
-    b1.r = initial[0][0]
-    b1.V = initial[0][1]
+    b1.r = W.initial[0][0]
+    b1.V = W.initial[0][1]
     b1.color = "blue"
     b1.vec_0 = b1.r
     b1.vel_0 = b1.V
     
     b2 = BigBody()
-    b2.r = initial[1][0]
-    b2.V = initial[1][1]
+    b2.r = W.initial[1][0]
+    b2.V = W.initial[1][1]
     b2.color = "green"
     b2.vec_0 = b2.r
     b2.vel_0 = b2.V
     
     b = SmallBody()
-    b.r = initial[2][0]
-    b.V = initial[2][1]
+    b.r = W.initial[2][0]
+    b.V = W.initial[2][1]
     b.vec_0 = (0, 0, 1)
     b.vel_0 = b.V
     
@@ -61,8 +58,8 @@ def moving():
     if W.r_panel.renew_parameter:
         W.r_panel.renew_parameter = False
         for i in range(len(Objects)):
-            Objects[i].r = initial[i][0]
-            Objects[i].V = initial[i][1]
+            Objects[i].r = W.initial[i][0]
+            Objects[i].V = W.initial[i][1]
             delete_last_stats('output1.txt'), delete_last_stats('output2.txt')
 
     if Time_counter % round((5 * sqrt(W.dt))) == 0:
