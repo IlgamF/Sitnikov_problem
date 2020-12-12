@@ -39,6 +39,8 @@ class Window:
         self.light = 0  # defines color of canvas (black or white)
         self.colours = ('#161a1e', '#dcecf5')
 
+        self.dt = 100
+
         self.space = Canvas(self.root, bg=self.colours[self.light])
         self.space.pack(side=TOP, fill="both", expand=True)
         self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,

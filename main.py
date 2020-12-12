@@ -19,8 +19,6 @@ W = Window('Sitnikov problem', Objects)
 
 def get_objects():
     b1 = BigBody()
-    '''b1.a = 150
-    b1.Vb = 1.5'''
     b1.r = (150, 0, 0)
     b1.V = (0, 1.5, 0)
     b1.color = "blue"
@@ -30,8 +28,6 @@ def get_objects():
     b2 = BigBody()
     b2.r = (-150, 0, 0)
     b2.V = (0, -1.5, 0)
-    '''b2.a = -150
-    b2.Vb = -1.5'''
     b2.color = "green"
     b2.vec_0 = b2.r
     b2.vel_0 = b2.V
@@ -39,7 +35,6 @@ def get_objects():
     b = SmallBody()
     b.r = (0, 0, 0)
     b.V = (0, 0, 2)
-    # b.Vc = 2
     b.vec_0 = (0, 0, 1)
     b.vel_0 = b.V
     
@@ -48,9 +43,8 @@ def get_objects():
 
 def moving():
     global Time_counter
-    dt = 100
     Time_counter += 1
-    recalculate_objects_positions(Objects, dt/200)
+    recalculate_objects_positions(Objects, W.dt/200)
     if Time_counter % 50 == 0:
         Time_counter = 0
         W.l_panel.show_info(W)
@@ -64,7 +58,7 @@ def moving():
         W.space.update()
 
     if W.process:
-        W.space.after(101 - dt, moving)
+        W.space.after(101 - W.dt, moving)
     pass
 
 

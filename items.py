@@ -244,9 +244,13 @@ class LeftPanel:
 class RightPanel:
     def __init__(self, w):
         width, height = w.in_w, w.in_h
+        self.width = w.in_w
         self.left_top = (width // 2 - 118, - height//2 + 15)
         self.right_bottom = (width // 2 - 15, height // 2 - 75)
         self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff')
+        self.names = ['Промежуток\n времени', 'Масса M1', 'Масса М2', 'Масса m']
+        self.states = []
+        self.put_names(w)
         pass
 
     def resize(self, w):
@@ -254,4 +258,13 @@ class RightPanel:
         self.left_top = (width // 2 - 118, - height//2 + 15)
         self.right_bottom = (width // 2 - 15, height // 2 - 75)
         w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
+        for i, state in enumerate(self.states):
+            state.place(x=width - 115, y=(20 + 100 * i))
+        pass
+
+    def put_names(self, w):
+        for i, name in enumerate(self.names):
+            st = Label(w.space, text=name, font="Arial 12", bg="#fff", fg='#000', justify='left')
+            self.states.append(st)
+            st.place(x=self.width - 116, y=(20 + 100 * i))
         pass
