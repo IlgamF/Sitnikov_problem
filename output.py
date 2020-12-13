@@ -66,3 +66,7 @@ def write_stats_data_to_file(output_filename, body):
             print(line, file=output_file)
     output_file.close()
     pass
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")
