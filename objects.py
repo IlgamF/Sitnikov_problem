@@ -9,7 +9,7 @@ import numpy as np
 
 
 class BigBody:
-    """Класс, описывающий тело большей массы."""
+    """Class that describes body with big mass"""
     def __init__(self):
         self.type = "big body"
         self.m = 1000
@@ -28,6 +28,11 @@ class BigBody:
         self.vec_0 = (0, 0, 0)
 
     def push(self, event):
+        """
+        Reacts on click
+        :param event: <Button-1>
+        :return: True if click was on it and False else.
+        """
         center = (self.x, self.y)
         x, y = event.x - event.widget.winfo_width()//2, event.y - event.widget.winfo_height()//2
         if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R:
@@ -37,7 +42,7 @@ class BigBody:
 
 
 class SmallBody:
-    """Класс, описывающий тело меньшей массы."""
+    """Class that describes body with small mass"""
     def __init__(self):
         self.type = "small body"
         self.m = 1
@@ -55,6 +60,11 @@ class SmallBody:
         self.vec_0 = (0, 0, 0)
 
     def push(self, event):
+        """
+        Reacts on click
+        :param event: <Button-1>
+        :return: True if click was on it and False else.
+        """
         center = (self.x, self.y)
         x, y = event.x - event.widget.winfo_width() // 2, event.y - event.widget.winfo_height() // 2
         if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.R:
