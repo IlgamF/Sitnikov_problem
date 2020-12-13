@@ -12,19 +12,35 @@ from output import *
 from numpy import *
 
 Close = False
+"""
+Application-destroyer flag
+"""
+
 Objects = []
+"""
+List of bodies [b1, b2, b]
+"""
+
 Time_counter = 0
-P = Point()
+"""
+Counter of renewing data
+"""
+
 W = Window('Sitnikov problem', Objects)
 
 
+
 def get_objects():
+    """
+    Defines three bodies: b1 and b2 - with greater mass, b - width a small one
+    :return: list of three bodies [b1, b2, b]
+    """
     b1 = BigBody()
-    b1.r = W.initial[0][0]
-    b1.V = W.initial[0][1]
+    b1.r = W.initial[0][0]  # initial coordinates (x, y, z)
+    b1.V = W.initial[0][1]  # initial velocity (Vx, Vy, Vz)
     b1.color = "blue"
-    b1.vec_0 = b1.r
-    b1.vel_0 = b1.V
+    b1.vec_0 = b1.r  # initial radius-vector
+    b1.vel_0 = b1.V  # initial velocity-vector
     
     b2 = BigBody()
     b2.r = W.initial[1][0]
@@ -43,6 +59,10 @@ def get_objects():
 
 
 def moving():
+    """
+    Allows bodies to move
+    :return:
+    """
     global Time_counter
     Time_counter += 1
     recalculate_objects_positions(Objects, W.dt/2)
@@ -76,6 +96,11 @@ def moving():
 
 
 def close(event):
+    """
+    Changes parameters to destroy the window
+    :param event: <Destroy>
+    :return:
+    """
     global Close
     W.process = False
     Close = True
@@ -83,19 +108,28 @@ def close(event):
 
 
 def push(event):
+    """
+    Reaction to left-button click
+    :param event: <Button-1>
+    :return:
+    """
     W.push(event)
     for i in range(len(Objects)):
         if Objects[i].push(event):
-            W.l_panel.info = Objects[i]
+            W.l_panel.info = Objects[i]  # renew information on the left panel with another mass
             break
     if W.process:
-        moving()
-    W.l_panel.show_info(W)
+        moving()  # if "play" was clicked -> continue
+    W.l_panel.show_info(W)  # renew information on the left panel in case of stopping the programme
     W.space.update()
     pass
 
 
 def main():
+    """
+    Main function of the programme
+    :return:
+    """
     global Objects
 
     # obj = ImageTk.PhotoImage(file='slowfast.png')
@@ -104,7 +138,7 @@ def main():
     print('Modelling started!')
 
     Objects = get_objects()
-    W.o = Objects
+    W.objects = Objects
     delete_last_stats('output1.txt')
     delete_last_stats('output2.txt')
     for i in (0, 1):  # images of bodies b1 and b2
@@ -133,6 +167,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-

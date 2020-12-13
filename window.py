@@ -64,7 +64,7 @@ class Window:
         self.r_panel = RightPanel(self)
 
         self.additional = 0  # defines new windows
-        self.o = o
+        self.objects = o
         pass
 
     def init_buttons(self):
@@ -128,7 +128,8 @@ class Window:
             self.process = False
         if a == 2:
             self.process = False
-            draw_graph(self.o, ('output1.txt', 'output2.txt'))
+            self.buttons[5].change_img(self)
+            draw_graph(self.objects, ('output1.txt', 'output2.txt'))
         if a == 3:
             self.additional = InfoWindow('Информация о программе', 'info.txt')
             self.additional.file_reading('info.txt')
@@ -179,24 +180,6 @@ class InfoWindow:
         for i in range(len(s)):
             st = Label(self.root, text=s[i], font="TimesNewRoman 12", bg="white", fg="black")
             st.place(x=50, y=5+20*i)
-        pass
-
-
-class Point:
-    """Класс, описывающий точки траектории тел"""
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.r = 1
-        pass
-
-    def draw_point(self, objects, w):
-        for body in objects:
-            self.x = body.x
-            self.y = body.y
-            w.space.create_oval([self.x - self.r, self.y - self.r],
-                                [self.x + self.r, self.y + self.r],
-                                fill="white")
         pass
 
 
