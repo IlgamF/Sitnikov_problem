@@ -7,6 +7,11 @@ Module for saving data to special files
 
 
 def py(vec):
+    """
+    Returns vector length
+    :param vec: [x1, x2, ..., xn]
+    :return: sqrt(x1**2 + ... + xn**2)
+    """
     square = 0
     for i in range(len(vec)):
         square += vec[i]**2
@@ -14,6 +19,12 @@ def py(vec):
 
 
 def cos_theorem(vec1, vec2):
+    """
+    Defines relative orientation
+    :param vec1: [x1, x2, ..., xn]
+    :param vec2: [y1, y2, ..., yn]
+    :return: 1 if scalar product is > 0, else returns -1
+    """
     scalar = 0
     for i in range(3):
         scalar += vec1[i] * vec2[i]
@@ -24,14 +35,23 @@ def cos_theorem(vec1, vec2):
 
 
 def delete_last_stats(output_filename):
-    """Функция удаляет предыдущие значения, записанные в файл output.txt"""
+    """
+    Deletes previous data in 'output_filename.txt'
+    :param output_filename: 'filename.txt'
+    :return:
+    """
     with open(output_filename, 'w') as output_file:
         print('', file=output_file)
+    pass
 
 
 def write_stats_data_to_file(output_filename, body):
-    """ Функция сохраняет расстояния и скорости. Строки имеют следующий формат:
-    <r>, <V> """
+    """
+    Saves center-distance and velocity as <r>, <V> into 'output_filename.txt'
+    :param output_filename: 'filename.txt'
+    :param body: BigBody or SmallBody from Objects: [b1, b2, b]
+    :return:
+    """
   
     file_list = []
     r = py(body.r) * cos_theorem(body.r, body.vec_0)
@@ -45,3 +65,4 @@ def write_stats_data_to_file(output_filename, body):
         for line in file_list:
             print(line, file=output_file)
     output_file.close()
+    pass
