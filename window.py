@@ -17,57 +17,63 @@ views = [['Oxy', 3*np.pi/2, np.pi, 'off'],  # surface Oxy
          ['Yxz', 3*np.pi/2, np.pi/4, np.pi],  # y looks at us and surface Oxz
          ['Zxy', 3*np.pi/2, np.pi, np.pi/4],  # Z looks at us and surface Oxy
          ['XYz', np.pi/3, 5*np.pi/3, np.pi]]  # X, Y look at us and axis Z - up
+"""
+special global list with different types of views.
+[View name, Angle between X axis and vertical line(VL), that looks down, btw. Y and VL, btw Z and VL]
+if Angle == 'off', it means that axis is not drawn on canvas                                                     
+"""
 
 
 class Window:
     """
-    Window class: carries parameters:
-    self.root - window
-    self.space - canvas
-    self.color - canvas color
+    Window class: carries parameters needed to build a window with all the buttons and axes and bodies, etc.
     """
     def __init__(self, title, o):
         user32 = ctypes.windll.user32
-        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 10.8)
-        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 8.1)
+        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 10.8)  # Initial window width
+        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 8.1)  # Initial window height
 
-        self.root = Tk()  # create window
-        self.root.geometry('%ix%i' % (self.in_w, self.in_h))
-        self.root.title(title)  # window top-left title
-        self.root.minsize()
+        self.root = Tk()  # Create window
+        self.root.geometry('%ix%i' % (self.in_w, self.in_h))  # initial window size
+        self.root.title(title)  # Window top-left title
 
-        self.light = 0  # defines color of canvas (black or white)
-        self.colours = ('#262a2e', '#dcecf5')
+        self.light = 0  # Defines color of canvas (black or white)
+        self.colours = ('#262a2e', '#dcecf5')  # Window colours: (dark, light)
 
-        self.dt = 0.5
+        self.dt = 0.5  # Time interval
 
         self.initial = [[(100, 0, 0), (0, 2, 0)], [(-100, 0, 0), (0, -2, 0)], [(0, 0, 0), (0, 0, 2)]]
+        # Initial parameters of three bodies
 
+        # Main canvas
         self.space = Canvas(self.root, bg=self.colours[self.light])
         self.space.pack(side=TOP, fill="both", expand=True)
-        self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,
-                                           self.in_w / 2, self.in_h / 2))
+        self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2, self.in_w / 2, self.in_h / 2))
         self.space.xview_moveto(.5)
         self.space.yview_moveto(.5)
 
-        self.process = False
+        self.process = False  # Flag of process
 
-        self.view = 0
-        self.axes_alive = [True, True, False]
-        self.axes = Axis(self)
-        self.angles = [(0, 0), (0, 0), (0, 0)]
+        self.view = 0  # Number of view in views
+        self.axes_alive = [True, True, False]  # Declares initial axis conditions [x: on, y:on, z: off]
+        self.axes = Axis(self)  # axes drawn on canvas
+        self.angles = [(0, 0), (0, 0), (0, 0)]  # Declares zero axis conditions
         self.reorganize_axes()
 
-        self.buttons = self.init_buttons()
+        self.buttons = self.init_buttons()  # Left-Bottom buttons panel
 
-        self.l_panel = LeftPanel(self)
-        self.r_panel = RightPanel(self)
+        self.l_panel = LeftPanel(self)  # Left-Top information panel
+        self.r_panel = RightPanel(self)  # Right panel with buttons
 
-        self.additional = 0  # defines new windows
-        self.objects = o
+        self.additional = 0  # Defines new windows
+        self.objects = o  # contains Objects from main
         pass
 
     def init_buttons(self):
+        """
+        Initializes buttons
+        :return: [RoundButton1, ..., RoundButton6]
+        """
         buttons = []
         for i in (1, 2, 3, 4, -2, -1):
             but = RoundButton(self.space, self.in_w, self.in_h, i)
@@ -75,6 +81,11 @@ class Window:
         return buttons
 
     def resize(self, event):
+        """
+        Changes all the coordinates when user changes window-size
+        :param event: <Configure>
+        :return:
+        """
         w, h = self.root.winfo_width(), self.root.winfo_height()
 
         self.space.configure(scrollregion=(- w / 2, - h / 2, w / 2, h / 2))
@@ -91,6 +102,10 @@ class Window:
         pass
 
     def repaint(self):
+        """
+        Repaints all the elements when user clicks 'Repaint' button
+        :return:
+        """
         self.light = abs(self.light - 1)
 
         self.space.configure(bg=self.colours[self.light])
@@ -103,13 +118,17 @@ class Window:
         pass
 
     def reorganize_axes(self):
+        """
+        Reorganizes axes positions when user changes the view
+        :return:
+        """
         view = views[self.view]
         self.axes_alive = [True, True, True]
         self.angles = [(0, 0), (0, 0), (0, 0)]
         for i in range(len(view)):
             if i == 0:
                 continue
-            if view[i] == 'off':  # switches off the axis, if it is not used
+            if view[i] == 'off':  # Switches off the axis, if it is not used
                 self.axes_alive[i - 1] = False
                 self.angles[i - 1] = (0, 0)
             else:
@@ -119,6 +138,11 @@ class Window:
         pass
 
     def push(self, event):
+        """
+        Gives reaction on pushing left-bottom buttons panel
+        :param event: <Button-1>
+        :return:
+        """
         a = 0
         for i in self.buttons:
             a += i.push(event)
@@ -144,30 +168,26 @@ class Window:
         if a == 6:
             self.process = not self.process
         if a != 0:
-            self.buttons[5].change_img(self)
+            self.buttons[5].change_img(self)  # Changes image of 'play' button
         pass
 
 
 class InfoWindow:
     """
-    Window class: carries parameters:
-    self.root - window
-    self.space - canvas
-    self.color - canvas color
+    Information Window class
     """
     def __init__(self, title, filename):
         user32 = ctypes.windll.user32
-        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 6)
-        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 4.5)
+        self.in_w = round(user32.GetSystemMetrics(0) / 16 * 6)  # Window width
+        self.in_h = round(user32.GetSystemMetrics(1) / 9 * 4.5)  # Window height
 
-        self.close = False
+        self.close = False  # If the window exists, this parameter is False
 
-        self.root = Tk()  # create window
+        self.root = Tk()  # Create window
         self.root.geometry('%ix%i' % (self.in_w, self.in_h))
-        self.root.title(title)  # window top-left title
-        self.root.minsize()
+        self.root.title(title)  # Window top-left title
         
-        self.space = Canvas(self.root, bg='white')
+        self.space = Canvas(self.root, bg='white')  # Canvas to print on it
         self.space.pack(side=TOP, fill="both", expand=True)
         self.space.configure(scrollregion=(-self.in_w / 2, -self.in_h / 2,
                                            self.in_w / 2, self.in_h / 2))
@@ -175,6 +195,11 @@ class InfoWindow:
         pass
 
     def file_reading(self, filename):
+        """
+        Places text on the canvas
+        :param filename: 'filename.txt' <- from this file text for windows is taken
+        :return:
+        """
         inp = open(filename, 'r', encoding='utf-8')
         s = inp.readlines()
         for i in range(len(s)):
@@ -184,6 +209,12 @@ class InfoWindow:
 
 
 def reorganize_coordinates(w, body):
+    """
+    Reorganises coordinates from (x, y, z) axis to (X, Y) - window coordinates
+    :param w: Window
+    :param body: BigBody or SmallBody from Objects: [b1, b2, b]
+    :return:
+    """
     axes, angles = w.axes_alive, w.angles
     phi_x, phi_y, phi_z = angles[0], angles[1], angles[2]
     da, db, dc = (0, 0), (0, 0), (0, 0)
@@ -199,20 +230,32 @@ def reorganize_coordinates(w, body):
 
 
 def create_body_image(w, body):
+    """
+    Creates body image
+    :param w: Window
+    :param body: BigBody or SmallBody from Objects: [b1, b2, b]
+    :return:
+    """
     reorganize_coordinates(w, body)
     body.image = w.space.create_oval([body.x - body.R, body.y - body.R],
                                      [body.x + body.R, body.y + body.R],
                                      fill=body.color)
-    return
+    pass
 
 
 def update_object_position(w, body):
+    """
+    Updates body positions on the canvas
+    :param w: Window
+    :param body: BigBody or SmallBody from Objects: [b1, b2, b]
+    :return:
+    """
     reorganize_coordinates(w, body)
     w.space.coords(body.image,
                    body.x - body.R, body.y - body.R,
                    body.x + body.R, body.y + body.R)
     w.space.update()
-    return
+    pass
 
 
 if __name__ == "__main__":

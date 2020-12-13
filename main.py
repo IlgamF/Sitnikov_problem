@@ -154,10 +154,11 @@ def main():
 
     W.space.bind("<Configure>", W.resize)
     W.space.bind("<Button-1>", push)
-    W.root.bind("<Destroy>", close)
 
     if W.process:
         moving()
+
+    W.root.bind("<Destroy>", close)
 
     if not Close:
         W.root.mainloop()
