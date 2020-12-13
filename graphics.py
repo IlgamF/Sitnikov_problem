@@ -10,6 +10,12 @@ from matplotlib import pyplot as pl
 
 
 def draw_graph(objects, output_filenames):
+    """
+    gets data out of files with names given
+    :param objects: [b1, b2, b3]
+    :param output_filenames: ['filename1.txt', 'filename2.txt']
+    :return:
+    """
     distances = []
     velocities = []
     for filename in output_filenames:
