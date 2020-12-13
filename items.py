@@ -2,7 +2,7 @@
 # license: GPLv3
 
 """
-Visualization module. Describes main screen processes
+Visualization module. Describes main items for Window
 """
 
 from tkinter import *
@@ -11,51 +11,90 @@ from PIL import ImageTk
 
 
 def point_towards(w, i):
+    """
+    Defines point of axis that is in the 3rd dimension on the screen (looks at us)
+    :param w: Window
+    :param i: Axis number (0 - x, 1 - y, 2 - z)
+    :return: [bottom-point: (x1, y1), top point: (x2, y2)
+    """
     tg = w.angles[i][0] / w.angles[i][1]
     return [(-w.in_h / 2 * tg, w.in_h / 2), (w.in_h / 2 * tg, -w.in_h / 2)]
 
 
 def point_resize(w, i):
+    """
+    Changes point of axis that is in the 3rd dimension on the screen (looks at us)
+    :param w: Window
+    :param i: Axis number (0 - x, 1 - y, 2 - z)
+    :return: [bottom-point: (x1, y1), top point: (x2, y2)
+    """
     width, height = w.space.winfo_width(), w.space.winfo_height()
     tg = w.angles[i][0] / w.angles[i][1]
     return [(-height / 2 * tg, height / 2), (height / 2 * tg, -height / 2)]
 
 
 def round_pair(a):
+    """
+    Gives integer pair from float pair
+    :param a: pair (a1, a2)
+    :return: [a1: int, a2: int]
+    """
     return [round(a[0], 0), round(a[1], 0)]
 
 
 def sum_of_squares(a, b, c):
+    """"
+    Returns sum of squares
+    :param a: number
+    :param b: number
+    :param c: number
+    :return: sqrt(a**2 + b**2 + c**2)
+    """
     return (a**2 + b**2 + c**2)**0.5
 
 
 def make_three(string):
+    """
+    Changes string '(a, b, c)' into a list (a, b, c)
+    :param string: '(a, b, c)'
+    :return: (a, b, c)
+    """
     string = string[1:-1].split(', ')
     return float(string[0]), float(string[1]), float(string[2])
 
 
 class RoundButton:
+    """
+    class that defines buttons in the bottom of the programme
+    """
     def __init__(self, canvas, width, height, i):
         self.width, self.height = width, height
         self.radius = 28
         self.i = i
         if i > 0:
-            self.num = i  # button serial number
+            self.num = i  # Button serial number
         else:
             self.num = 7 + i
-        self.colours_dark = ['th1', 'gr1', 'in1', 'q1', 'ey1', 'pl1']
-        self.colours_light = ['th2', 'gr2', 'in2', 'q2', 'ey2', 'pl2']
+        self.colours_dark = ['th1', 'gr1', 'in1', 'q1', 'ey1', 'pl1']  # Icon-files (dark theme)
+        self.colours_light = ['th2', 'gr2', 'in2', 'q2', 'ey2', 'pl2']  # Icon-files (light theme)
+
         if i > 0:
             self.point_x = -self.width // 2 + (self.i - 1) * 2 * self.radius + 10
         else:
             self.point_x = self.width // 2 + self.i * 2 * self.radius - 10
         self.point_y = self.height // 2 - 2 * self.radius - 5
+
         self.filename = self.colours_dark[self.num-1] + '.png'
         self.obj = ImageTk.PhotoImage(file=self.filename)
         self.id = canvas.create_image(self.point_x, self.point_y, anchor=NW, image=self.obj)
         pass
 
     def resize(self, canvas):
+        """
+        Changes coordinates when user changes window-size
+        :param canvas: Window.space
+        :return:
+        """
         self.width, self.height = canvas.winfo_width(), canvas.winfo_height()
         if self.i > 0:
             self.point_x = -self.width // 2 + (self.i - 1) * 2 * self.radius + 10
@@ -66,6 +105,11 @@ class RoundButton:
         pass
 
     def repaint(self, w):
+        """
+        Changes buttons images when user changes mode
+        :param w: Window
+        :return:
+        """
         if w.light == 1:
             self.filename = self.colours_light[self.num - 1] + '.png'
             self.obj = ImageTk.PhotoImage(file=self.filename)
@@ -77,6 +121,11 @@ class RoundButton:
         pass
 
     def push(self, event):
+        """
+        Defines, whether user pushed the button or not
+        :param event: <Button-1>
+        :return: self.num if the button was pushed, else returns 0
+        """
         center = (self.point_x + self.radius, self.point_y + self.radius)
         x, y = event.x - self.width//2, event.y - self.height//2
         if np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2) < self.radius - 3:
@@ -85,6 +134,11 @@ class RoundButton:
             return 0
 
     def change_img(self, w):
+        """
+        Cahnges image of the 6th button from 'play' to 'pause' and visa versa
+        :param w: Window
+        :return:
+        """
         images = [['pl1', 'pl2'], ['pa1', 'pa2']]
         process = int(w.process)
         self.filename = images[process][w.light] + '.png'
@@ -94,6 +148,9 @@ class RoundButton:
 
 
 class Axis:
+    """
+    Axis class. Contains all the axis (X, Y, Z)
+    """
     def __init__(self, w):
         self.x = [(-w.in_w / 2, -2), (w.in_w / 2 - 2, -2)]
         self.y = [(0, -w.in_h / 2), (0, w.in_h / 2)]
@@ -114,6 +171,11 @@ class Axis:
         pass
 
     def repaint(self, w):
+        """
+        Repaints axes, when user changes mode
+        :param w: Window
+        :return:
+        """
         for i in (self.id_x, self.id_y, self.id_z):
             w.space.itemconfigure(i, fill=self.colors[w.light])
 
@@ -123,7 +185,7 @@ class Axis:
 
     def redraw(self, w):
         """
-        Function changes Axis positions when view changes
+        Function changes Axis positions when user changes view
         :param w: Window
         :return:
         """
@@ -162,6 +224,11 @@ class Axis:
         pass
 
     def resize(self, w):
+        """
+        Function changes axes size when user changes window-size
+        :param w: Window
+        :return:
+        """
         width, height = w.space.winfo_width(), w.space.winfo_height()
 
         x_pair = [(-width / 2, -2), (width / 2 - 2, -2)]
@@ -199,6 +266,11 @@ class Axis:
         pass
 
     def re_cord(self, w):
+        """
+        Places buttons on their new positions
+        :param w: Window
+        :return:
+        """
         id_list = [self.id_x, self.id_y, self.id_z]
         coordinates_list = [self.x, self.y, self.z]
         for i in range(len(id_list)):
@@ -209,6 +281,9 @@ class Axis:
 
 
 class LeftPanel:
+    """
+    Left-Top panel class
+    """
     def __init__(self, w):
         width, height = w.in_w, w.in_h
         self.left_top = (- width // 2 + 15, - height//2 + 15)
@@ -218,6 +293,11 @@ class LeftPanel:
         pass
 
     def resize(self, w):
+        """
+        Function changes panel position when user changes window-size
+        :param w: Window
+        :return:
+        """
         width, height = w.space.winfo_width(), w.space.winfo_height()
         self.left_top = (- width // 2 + 15, - height//2 + 15)
         self.right_bottom = (- width // 2 + 350, - height//2 + 125)
@@ -225,7 +305,11 @@ class LeftPanel:
         pass
 
     def show_info(self, w):
-        # функция должна выводить информацию о координате и скорости тел
+        """
+        Shows information about chosen body
+        :param w: Window
+        :return:
+        """
         if self.info.type == "big body":
             text_name = 'Массивное тело \n'
         else:
@@ -247,6 +331,9 @@ class LeftPanel:
 
 
 class RightPanel:
+    """
+    Right panel class
+    """
     def __init__(self, w):
         dy = 2
         self.window = w
@@ -350,6 +437,11 @@ class RightPanel:
         pass
 
     def resize(self, w):
+        """
+        Function changes panel position when user changes window-size
+        :param w: Window
+        :return:
+        """
         self.width, self.height = w.space.winfo_width(), w.space.winfo_height()
         self.point = (self.width - 118, 20)
         self.id.place(x=self.point[0], y=self.point[1])
