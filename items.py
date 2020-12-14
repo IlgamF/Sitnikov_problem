@@ -352,8 +352,6 @@ class RightPanel:
         self.time_panel = Entry(self.id, width=7,  justify='center', textvariable=self.time)
         self.time_panel.pack(side=TOP, pady=dy)
         self.time_panel.insert(0, str(self.data[0]))
-        self.time_button = Button(self.id, text='Применить', command=self.get_time)
-        self.time_button.pack(side=TOP, pady=dy)
 
         st = Label(self.id, text='Масса M1',  bg="#eee", fg='#000', justify='center')
         st.pack(side=TOP, pady=dy)
@@ -361,8 +359,6 @@ class RightPanel:
         self.M1_panel = Entry(self.id, width=7,  justify='center', textvariable=self.m1)
         self.M1_panel.pack(side=TOP, pady=dy)
         self.M1_panel.insert(0, str(self.data[1]))
-        self.M1_button = Button(self.id, text='Применить', command=self.get_m1, bg='blue', fg='white')
-        self.M1_button.pack(side=TOP, pady=dy)
 
         st = Label(self.id, text='Масса M2',  bg="#eee", fg='#000', justify='center')
         st.pack(side=TOP, pady=dy)
@@ -370,8 +366,6 @@ class RightPanel:
         self.M2_panel = Entry(self.id, width=7,  justify='center', textvariable=self.m2)
         self.M2_panel.pack(side=TOP, pady=dy)
         self.M2_panel.insert(0, str(self.data[2]))
-        self.M2_button = Button(self.id, text='Применить', command=self.get_m2, bg='green')
-        self.M2_button.pack(side=TOP, pady=dy)
 
         st = Label(self.id, text='Масса m',  bg="#eee", fg='#000', justify='center')
         st.pack(side=TOP, pady=dy)
@@ -379,7 +373,8 @@ class RightPanel:
         self.m_panel = Entry(self.id, width=7, justify='center', textvariable=self.m)
         self.m_panel.pack(side=TOP, pady=dy)
         self.m_panel.insert(0, str(self.data[3]))
-        self.m_button = Button(self.id, text='Применить', command=self.get_m, bg='red')
+
+        self.m_button = Button(self.id, text='Применить', command=self.get_all)
         self.m_button.pack(side=TOP, pady=dy)
 
         self.light = False
@@ -447,19 +442,10 @@ class RightPanel:
         self.id.place(x=self.point[0], y=self.point[1])
         pass
 
-    def get_time(self):
+    def get_all(self):
         self.data[0] = float(self.time.get())
-        pass
-
-    def get_m1(self):
         self.data[1] = int(self.m1.get())
-        pass
-
-    def get_m2(self):
         self.data[2] = int(self.m2.get())
-        pass
-
-    def get_m(self):
         self.data[3] = float(self.m.get())
         pass
 
