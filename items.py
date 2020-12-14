@@ -332,16 +332,15 @@ class RightPanel:
 
         self.renew_parameter = False
 
-        self.renew_button = Button(self.id, text='Обновить\nдо исходных\nпараметров',
-                                   command=self.get_all, bg='#000', fg='#fff')
-        self.renew_button.pack(side=TOP, pady=dy)
-
         st = Label(self.id, text='Промежуток\nвремени', bg="#eee", fg='#000', justify='center')
         st.pack(side=TOP, pady=dy)
         self.time = StringVar()
         self.time_panel = Entry(self.id, width=7,  justify='center', textvariable=self.time)
         self.time_panel.pack(side=TOP, pady=dy)
         self.time_panel.insert(0, str(self.data[0]))
+
+        self.time_button = Button(self.id, text='Применить', command=self.get_time, bg='#fff')
+        self.time_button.pack(side=TOP, pady=dy)
 
         st = Label(self.id, text='Масса M1',  bg="#eee", fg='#000', justify='center')
         st.pack(side=TOP, pady=dy)
@@ -406,8 +405,12 @@ class RightPanel:
         self.vel3_panel.pack(side=TOP)
         self.vel3_panel.insert(0, str(w.initial[2][1]))
 
+        self.renew_button = Button(self.id, text='Обновить',
+                                   command=self.get_all, bg='#000', fg='#fff')
+        self.renew_button.pack(side=TOP, pady=dy)
+
         self.light = False
-        self.light_button = Button(self.id, text='Светлый\nрежим', command=self.change_light, bg='#fff')
+        self.light_button = Button(self.id, text='Светлый режим', command=self.change_light, bg='#fff')
         self.light_button.pack(side=TOP, pady=dy)
         pass
 
@@ -422,8 +425,11 @@ class RightPanel:
         self.id.place(x=self.point[0], y=self.point[1])
         pass
 
-    def get_all(self):
+    def get_time(self):
         self.data[0] = float(self.time.get())
+        pass
+
+    def get_all(self):
         self.data[1] = int(self.m1.get())
         self.data[2] = int(self.m2.get())
         self.data[3] = float(self.m.get())
@@ -441,10 +447,9 @@ class RightPanel:
         self.light = not self.light
         self.window.repaint()
         if self.light:
-            self.light_button['text'] = 'Тёмный\nрежим'
+            self.light_button['text'] = 'Тёмный режим'
         else:
-            self.light_button['text'] = 'Светлый\nрежим'
-
+            self.light_button['text'] = 'Светлый режим'
 
 
 if __name__ == "__main__":
