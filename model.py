@@ -44,8 +44,6 @@ def body_force(body, objects):
     for obj in objects:
         if body == obj:
             continue
-        elif obj.type == 'small body':
-            continue
         else:
             vec = np.array(obj.r) - np.array(body.r)
             r = np.sqrt(sum_of_squares(vec))
