@@ -286,22 +286,8 @@ class LeftPanel:
     """
     def __init__(self, w):
         width, height = w.in_w, w.in_h
-        self.left_top = (- width // 2 + 15, - height//2 + 15)
-        self.right_bottom = (- width // 2 + 400, - height//2 + 125)
-        self.id = w.space.create_rectangle(self.left_top, self.right_bottom, fill='#fff', width=1)
+        self.point = (- width // 2 + 15, - height//2 + 15)
         self.info = 0
-        pass
-
-    def resize(self, w):
-        """
-        Function changes panel position when user changes window-size
-        :param w: Window
-        :return:
-        """
-        width, height = w.space.winfo_width(), w.space.winfo_height()
-        self.left_top = (- width // 2 + 15, - height//2 + 15)
-        self.right_bottom = (- width // 2 + 350, - height//2 + 125)
-        w.space.coords(self.id, self.left_top[0], self.left_top[1], self.right_bottom[0], self.right_bottom[1])
         pass
 
     def show_info(self, w):
@@ -346,7 +332,11 @@ class RightPanel:
 
         self.renew_parameter = False
 
-        st = Label(self.id, text='Промежуток\nвремени\n(отн. исх.)', bg="#eee", fg='#000', justify='center')
+        self.renew_button = Button(self.id, text='Обновить\nдо исходных\nпараметров',
+                                   command=self.get_all, bg='#000', fg='#fff')
+        self.renew_button.pack(side=TOP, pady=dy)
+
+        st = Label(self.id, text='Промежуток\nвремени', bg="#eee", fg='#000', justify='center')
         st.pack(side=TOP, pady=dy)
         self.time = StringVar()
         self.time_panel = Entry(self.id, width=7,  justify='center', textvariable=self.time)
@@ -374,18 +364,7 @@ class RightPanel:
         self.m_panel.pack(side=TOP, pady=dy)
         self.m_panel.insert(0, str(self.data[3]))
 
-        self.m_button = Button(self.id, text='Применить', command=self.get_all)
-        self.m_button.pack(side=TOP, pady=dy)
-
-        self.light = False
-        self.light_button = Button(self.id, text='Светлый\nрежим', command=self.change_light, bg='#fff')
-        self.light_button.pack(side=TOP, pady=dy)
-
-        self.renew_button = Button(self.id, text='Обновить\nдо исходных\nпараметров',
-                                   command=self.renew, bg='#000', fg='#fff')
-        self.renew_button.pack(side=TOP, pady=dy)
-
-        st = Label(self.id, text='Ввод вида\n(x, y, z)\n\nРасстояние\nдо M1')
+        st = Label(self.id, text='Расстояние до M1')
         st.pack(side=TOP, pady=dy)
         self.rho1 = StringVar()
         self.rho1_panel = Entry(self.id, width=10, justify='center', textvariable=self.rho1)
@@ -399,7 +378,7 @@ class RightPanel:
         self.vel1_panel.pack(side=TOP)
         self.vel1_panel.insert(0, str(w.initial[0][1]))
 
-        st = Label(self.id, text='Расстояние\nдо M2')
+        st = Label(self.id, text='Расстояние до M2')
         st.pack(side=TOP, pady=dy)
         self.rho2 = StringVar()
         self.rho2_panel = Entry(self.id, width=10, justify='center', textvariable=self.rho2)
@@ -413,7 +392,7 @@ class RightPanel:
         self.vel2_panel.pack(side=TOP)
         self.vel2_panel.insert(0, str(w.initial[1][1]))
 
-        st = Label(self.id, text='Расстояние\nдо m')
+        st = Label(self.id, text='Расстояние до m')
         st.pack(side=TOP, pady=dy)
         self.rho3 = StringVar()
         self.rho3_panel = Entry(self.id, width=10, justify='center', textvariable=self.rho3)
@@ -427,8 +406,9 @@ class RightPanel:
         self.vel3_panel.pack(side=TOP)
         self.vel3_panel.insert(0, str(w.initial[2][1]))
 
-        st = Label(self.id, text=30*' ')
-        st.pack(side=TOP, pady=dy)
+        self.light = False
+        self.light_button = Button(self.id, text='Светлый\nрежим', command=self.change_light, bg='#fff')
+        self.light_button.pack(side=TOP, pady=dy)
         pass
 
     def resize(self, w):
@@ -447,6 +427,14 @@ class RightPanel:
         self.data[1] = int(self.m1.get())
         self.data[2] = int(self.m2.get())
         self.data[3] = float(self.m.get())
+
+        self.renew_parameter = True
+        data = [[self.rho1, self.vel1], [self.rho2, self.vel2], [self.rho3, self.vel3]]
+        initials = [[], [], []]
+        for i in range(3):
+            for j in range(2):
+                initials[i].append(make_three(data[i][j].get()))
+        self.window.initial = initials
         pass
 
     def change_light(self):
@@ -457,15 +445,6 @@ class RightPanel:
         else:
             self.light_button['text'] = 'Светлый\nрежим'
 
-    def renew(self):
-        self.renew_parameter = True
-        data = [[self.rho1, self.vel1], [self.rho2, self.vel2], [self.rho3, self.vel3]]
-        initials = [[], [], []]
-        for i in range(3):
-            for j in range(2):
-                initials[i].append(make_three(data[i][j].get()))
-        self.window.initial = initials
-        pass
 
 
 if __name__ == "__main__":

@@ -96,7 +96,6 @@ class Window:
         self.axes.resize(self)
 
         self.r_panel.resize(self)
-        self.l_panel.resize(self)
 
         self.in_w, self.in_h = w, h
         pass
