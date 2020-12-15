@@ -179,7 +179,7 @@ class InfoWindow:
         user32 = ctypes.windll.user32
         self.in_w = round(user32.GetSystemMetrics(0) / 16 * 6)  # Window width
         if filename == 'teor.txt':
-            self.in_h = round(user32.GetSystemMetrics(1) / 9 * 6)
+            self.in_h = round(user32.GetSystemMetrics(1) / 9 * 8)
         elif filename == 'info.txt':
             self.in_h = round(user32.GetSystemMetrics(1) / 9 * 3)
         else:
