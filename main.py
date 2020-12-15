@@ -70,10 +70,9 @@ def moving():
         Time_counter = 0
         W.l_panel.show_info(W)
 
-    data = W.r_panel.data
-    W.dt = data[0]
+    W.dt = W.r_panel.data[0]
     for i in range(len(Objects)):
-        Objects[i].m = data[i + 1]
+        Objects[i].m = W.r_panel.data[i + 1]
 
     if W.r_panel.renew_parameter:
         W.r_panel.renew_parameter = False
