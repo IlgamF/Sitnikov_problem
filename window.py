@@ -177,10 +177,7 @@ class InfoWindow:
     """
     def __init__(self, title, filename):
         user32 = ctypes.windll.user32
-<<<<<<< HEAD
         self.in_w = round(user32.GetSystemMetrics(0) / 12 * 6)  # Window width
-        self.in_h = round(user32.GetSystemMetrics(1) / 6 * 4.5)  # Window height
-=======
         self.in_w = round(user32.GetSystemMetrics(0) / 16 * 6)  # Window width
         if filename == 'teor.txt':
             self.in_h = round(user32.GetSystemMetrics(1) / 9 * 8)
@@ -188,7 +185,6 @@ class InfoWindow:
             self.in_h = round(user32.GetSystemMetrics(1) / 9 * 3)
         else:
             self.in_h = round(user32.GetSystemMetrics(1) / 9 * 4.5)  # Window height
->>>>>>> f13f535869b42f3929b8a71cdf32d1d76d3f0900
 
         self.close = False  # If the window exists, this parameter is False
 
