@@ -35,7 +35,7 @@ def draw_graph(objects, output_filenames):
 
     pl.subplot(1, 2, 1)
     pl.title(r'Фазовый портрет массивного тела')
-    pl.ylabel(r'$v - скорость тела$')
+    pl.ylabel(r'$v - скорость\ тела$')
     pl.xlabel(r'$r - расстояние$')
     for i in range(len(distances[1])):
         distances[0][i] = abs(distances[0][i])
@@ -44,7 +44,7 @@ def draw_graph(objects, output_filenames):
 
     pl.subplot(1, 2, 2)
     pl.title(r'Фазовый портрет легкого тела')
-    pl.ylabel(r'$v - скоростьтела$')
+    pl.ylabel(r'$v - скорость\ тела$')
     pl.xlabel(r'$r - расстояние$')
     pl.plot(distances[1], velocities[1], color='red')  # v(r)
 
